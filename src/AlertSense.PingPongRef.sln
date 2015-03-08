@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef", "AlertSense.PingPongRef\AlertSense.PingPongRef\AlertSense.PingPongRef.csproj", "{4389B305-B381-4B50-B1A8-BBB5259A0524}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef", "AlertSense.PingPongRef\AlertSense.PingPongRef.csproj", "{4389B305-B381-4B50-B1A8-BBB5259A0524}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.ServiceModel", "AlertSense.PingPongRef\AlertSense.PingPongRef.ServiceModel\AlertSense.PingPongRef.ServiceModel.csproj", "{53E82AC1-DD1D-4C66-B55F-F9F4ACFB2F40}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.ServiceModel", "AlertSense.PingPongRef.ServiceModel\AlertSense.PingPongRef.ServiceModel.csproj", "{53E82AC1-DD1D-4C66-B55F-F9F4ACFB2F40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.ServiceInterface", "AlertSense.PingPongRef\AlertSense.PingPongRef.ServiceInterface\AlertSense.PingPongRef.ServiceInterface.csproj", "{801A0F89-D5F6-49A6-BCEA-6624388C98A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.ServiceInterface", "AlertSense.PingPongRef.ServiceInterface\AlertSense.PingPongRef.ServiceInterface.csproj", "{801A0F89-D5F6-49A6-BCEA-6624388C98A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.Tests", "AlertSense.PingPongRef\AlertSense.PingPongRef.Tests\AlertSense.PingPongRef.Tests.csproj", "{D22B5797-9F2A-4BA7-9636-6EFCE62EBE00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.Tests", "AlertSense.PingPongRef.Tests\AlertSense.PingPongRef.Tests.csproj", "{D22B5797-9F2A-4BA7-9636-6EFCE62EBE00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
