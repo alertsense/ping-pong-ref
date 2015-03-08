@@ -11,6 +11,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.Tests", "AlertSense.PingPongRef.Tests\AlertSense.PingPongRef.Tests.csproj", "{D22B5797-9F2A-4BA7-9636-6EFCE62EBE00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.Domain", "AlertSense.PingPongRef.Domain\AlertSense.PingPongRef.Domain.csproj", "{857513A3-8FEF-491B-8255-F1221AC11E7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.Model", "AlertSense.PingPongRef.Model\AlertSense.PingPongRef.Model.csproj", "{635C7D73-E9C4-451E-BAEC-0CAEEA0A9746}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.Common", "AlertSense.PingPongRef.Common\AlertSense.PingPongRef.Common.csproj", "{A93FC2E3-31DC-4086-BFE2-57FD83FED9EB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{624F2491-CD05-4808-8E37-B75988647FB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.Domain.Tests", "AlertSense.PingPongRef.Domain.Tests\AlertSense.PingPongRef.Domain.Tests.csproj", "{DB3DC011-FC13-4609-8B76-A39D4A6FB0F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.Data", "AlertSense.PingPongRef.Data\AlertSense.PingPongRef.Data.csproj", "{EDECFAD3-30B0-4CF9-BFF0-3EA435227B93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,8 +45,32 @@ Global
 		{D22B5797-9F2A-4BA7-9636-6EFCE62EBE00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D22B5797-9F2A-4BA7-9636-6EFCE62EBE00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D22B5797-9F2A-4BA7-9636-6EFCE62EBE00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{857513A3-8FEF-491B-8255-F1221AC11E7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{857513A3-8FEF-491B-8255-F1221AC11E7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{857513A3-8FEF-491B-8255-F1221AC11E7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{857513A3-8FEF-491B-8255-F1221AC11E7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{635C7D73-E9C4-451E-BAEC-0CAEEA0A9746}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{635C7D73-E9C4-451E-BAEC-0CAEEA0A9746}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{635C7D73-E9C4-451E-BAEC-0CAEEA0A9746}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{635C7D73-E9C4-451E-BAEC-0CAEEA0A9746}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A93FC2E3-31DC-4086-BFE2-57FD83FED9EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A93FC2E3-31DC-4086-BFE2-57FD83FED9EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A93FC2E3-31DC-4086-BFE2-57FD83FED9EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A93FC2E3-31DC-4086-BFE2-57FD83FED9EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB3DC011-FC13-4609-8B76-A39D4A6FB0F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB3DC011-FC13-4609-8B76-A39D4A6FB0F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB3DC011-FC13-4609-8B76-A39D4A6FB0F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB3DC011-FC13-4609-8B76-A39D4A6FB0F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDECFAD3-30B0-4CF9-BFF0-3EA435227B93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDECFAD3-30B0-4CF9-BFF0-3EA435227B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDECFAD3-30B0-4CF9-BFF0-3EA435227B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDECFAD3-30B0-4CF9-BFF0-3EA435227B93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D22B5797-9F2A-4BA7-9636-6EFCE62EBE00} = {624F2491-CD05-4808-8E37-B75988647FB9}
+		{DB3DC011-FC13-4609-8B76-A39D4A6FB0F6} = {624F2491-CD05-4808-8E37-B75988647FB9}
 	EndGlobalSection
 EndGlobal
