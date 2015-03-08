@@ -42,7 +42,7 @@ namespace AlertSense.PingPongRef.Domain
             else  // score has not reached deuce
             {
                 // check for odd point number
-                if (pointNumber % 2 > 0)
+                if (IsOdd(pointNumber))
                 {
                     pointNumber++;
                 }
