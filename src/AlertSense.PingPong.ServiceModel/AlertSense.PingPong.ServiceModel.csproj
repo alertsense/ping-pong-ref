@@ -46,18 +46,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\BounceModel.cs" />
+    <Compile Include="CreateBounce.cs" />
+    <Compile Include="CreateGame.cs" />
+    <Compile Include="CreatePoint.cs" />
     <Compile Include="Enums\GameState.cs" />
     <Compile Include="Enums\Side.cs" />
-    <Compile Include="GameModel.cs" />
-    <Compile Include="PlayerModel.cs" />
-    <Compile Include="PointModel.cs" />
+    <Compile Include="Models\GameModel.cs" />
+    <Compile Include="GetGame.cs" />
+    <Compile Include="Models\GameSummary.cs" />
+    <Compile Include="GetGameSummary.cs" />
+    <Compile Include="Models\PlayerModel.cs" />
+    <Compile Include="Models\PointModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Requests\" />
-    <Folder Include="Responses\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

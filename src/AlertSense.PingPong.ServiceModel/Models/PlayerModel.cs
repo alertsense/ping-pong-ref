@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AlertSense.PingPong.ServiceModel
+namespace AlertSense.PingPong.ServiceModel.Models
 {
     public class PlayerModel
     {
