@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.22310.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef", "AlertSense.PingPongRef\AlertSense.PingPongRef.csproj", "{4389B305-B381-4B50-B1A8-BBB5259A0524}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.Domain.Tests", "AlertSense.PingPongRef.Domain.Tests\AlertSense.PingPongRef.Domain.Tests.csproj", "{DB3DC011-FC13-4609-8B76-A39D4A6FB0F6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.Data", "AlertSense.PingPongRef.Data\AlertSense.PingPongRef.Data.csproj", "{EDECFAD3-30B0-4CF9-BFF0-3EA435227B93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPongRef.DataModel", "AlertSense.PingPongRef.DataModel\AlertSense.PingPongRef.DataModel.csproj", "{B836E06D-88C3-4265-B6F6-392B105FF3A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +67,10 @@ Global
 		{EDECFAD3-30B0-4CF9-BFF0-3EA435227B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDECFAD3-30B0-4CF9-BFF0-3EA435227B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDECFAD3-30B0-4CF9-BFF0-3EA435227B93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B836E06D-88C3-4265-B6F6-392B105FF3A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B836E06D-88C3-4265-B6F6-392B105FF3A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B836E06D-88C3-4265-B6F6-392B105FF3A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B836E06D-88C3-4265-B6F6-392B105FF3A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
