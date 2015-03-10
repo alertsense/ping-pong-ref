@@ -9,4 +9,10 @@ namespace AlertSense.PingPong.ServiceModel
         public Side SideToAward { get; set; }
         public ulong Ticks { get; set; }
     }
+    public class BounceModel
+    {
+        public Guid GameId { get; set; }
+        public Side SideToAward { get; set; }
+        public ulong Ticks { get; set; }
+    }
 }
