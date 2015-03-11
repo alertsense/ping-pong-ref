@@ -24,26 +24,44 @@ namespace AlertSense.PingPong.Raspberry.IO
             if (Settings == null)
                 throw new Exception("Settings must not be null");
 
-            Console.WriteLine("Allocate Input Pin");
-            Settings.Driver = GpioConnectionSettings.DefaultDriver;
-            Settings.Driver.Allocate(Settings.LeftBouncePin,PinDirection.Input);
-            Console.WriteLine("Pin Ready");
-            Thread.Sleep(1000);
-            var cnt = 0;
-            try
+            //Settings.Driver = GpioConnectionSettings.DefaultDriver;
+            var driver = GpioConnectionSettings.DefaultDriver;
+            driver.Allocate(Settings.LeftReadyPin, PinDirection.Output);
+            driver.Allocate(Settings.LeftButtonPin, PinDirection.Input);
+            //for (int i = 0; i < 10; i++)
+            while(true)
             {
-                while (true)
-                {
-                    Console.WriteLine("Waiting for a bounce...");
-                    Settings.Driver.Wait(Settings.LeftBouncePin, true, 1000 * 60);
-                    cnt++;
-                    Console.WriteLine("Bounce {0}", cnt);
-                }
+                driver.Wait(Settings.LeftButtonPin, true, 1000 * 60);
+                driver.Write(Settings.LeftReadyPin, true);
+                Thread.Sleep(200);
+                driver.Wait(Settings.LeftButtonPin, false, 1000 * 60);
+                
+                driver.Wait(Settings.LeftButtonPin, true, 1000 * 60);
+                driver.Write(Settings.LeftReadyPin, false);
+                Thread.Sleep(200);
+                driver.Wait(Settings.LeftButtonPin, false, 1000 * 60);
             }
-            finally
-            {
-                Settings.Driver.Release(Settings.LeftBouncePin);
-            }
+
+            driver.Release(Settings.LeftReadyPin);
+            //Console.WriteLine("Allocate Input Pin");
+            //Settings.Driver = GpioConnectionSettings.DefaultDriver;
+            //Settings.Driver.Allocate(Settings.LeftBouncePin,PinDirection.Input);
+            //Console.WriteLine("Pin Ready");
+            //var cnt = 0;
+            //try
+            //{
+            //    while (true)
+            //    {
+            //        Console.WriteLine("Waiting for a bounce...");
+            //        Settings.Driver.Wait(Settings.LeftBouncePin, true, 1000 * 60);
+            //        cnt++;
+            //        Console.WriteLine("Bounce {0}", cnt);
+            //    }
+            //}
+            //finally
+            //{
+            //    Settings.Driver.Release(Settings.LeftBouncePin);
+            //}
             
             //_gpioConnection = new GpioConnection(new GpioConnectionSettings { Driver = Settings.Driver, PollInterval = 1});
 

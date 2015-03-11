@@ -61,11 +61,9 @@ namespace AlertSense.PingPong.Raspberry {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  ___ _              ___                   ___         __ 
-        /// | _ (_)_ _  __ _| _ \___ _ _  __ _| _ \___ / _|
-        /// |  _/ | &apos; \/ _` |  _/ _ \ &apos; \/ _` |   / -_)  _|
-        /// |_| |_|_||_\__, |_| \___/_||_\__, |_|_\___|_|  
-        ///            |___/             |___/.
+        ///   Looks up a localized string similar to +-+-+-+-+ +-+-+-+-+ +-+-+-+
+        ///|P|i|n|g| |P|o|n|g| |R|e|f|
+        ///+-+-+-+-+ +-+-+-+-+ +-+-+-+.
         /// </summary>
         internal static string Banner {
             get {
