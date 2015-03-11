@@ -1,0 +1,725 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Raspberry.IO.SerialPeripheralInterface</name>
+    </assembly>
+    <members>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.SpiTransferMode">
+            <summary>
+            Selects if data should be read, written or both.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferMode.Write">
+            <summary>
+            Write data to the chip.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferMode.Read">
+            <summary>
+            Read data from the chip.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferMode.ReadWrite">
+            <summary>
+            Write and read data simultaneously.
+            </summary>
+        </member>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection">
+            <summary>
+            Native SPI connection that communicates with Linux's userspace SPI driver (e.g. /dev/spidev0.0) using IOCTL.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.SetDelay(System.UInt16)">
+            <summary>
+            Sets the <see cref="P:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.Delay"/>.
+            </summary>
+            <param name="delayInMicroSeconds">Delay in µsec.</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.SetMaxSpeed(System.UInt32)">
+            <summary>
+            Sets the maximum clock speed.
+            </summary>
+            <param name="maxSpeedInHz">The speed in Hz</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.SetBitsPerWord(System.Byte)">
+            <summary>
+            Sets the device's wordsize <see cref="P:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.BitsPerWord"/>.
+            </summary>
+            <param name="wordSize">Bits per word</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.SetSpiMode(Raspberry.IO.SerialPeripheralInterface.SpiMode)">
+            <summary>
+            Sets the <see cref="T:Raspberry.IO.SerialPeripheralInterface.SpiMode"/>.
+            </summary>
+            <param name="spiMode">SPI mode</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.CreateTransferBuffer(System.Int32,Raspberry.IO.SerialPeripheralInterface.SpiTransferMode)">
+            <summary>
+            Creates a transfer buffer of the given <see paramref="sizeInBytes"/> and copies the connection settings to it.
+            </summary>
+            <param name="sizeInBytes">Memory size in bytes.</param>
+            <param name="transferMode">The transfer mode.</param>
+            <returns>The requested transfer buffer.</returns>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.CreateTransferBufferCollection(System.Int32,System.Int32,Raspberry.IO.SerialPeripheralInterface.SpiTransferMode)">
+            <summary>
+            Creates transfer buffers for <paramref name="numberOfMessages"/>.
+            </summary>
+            <param name="numberOfMessages">The number of messages to send.</param>
+            <param name="messageSizeInBytes">Message size in bytes.</param>
+            <param name="transferMode">The transfer mode.</param>
+            <returns>The requested transfer buffer collection.</returns>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.Transfer(Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer)">
+            <summary>
+            Starts the SPI data transfer.
+            </summary>
+            <param name="buffer">The transfer buffer that contains data to be send and/or the received data.</param>
+            <returns>An <see cref="T:System.Int32"/> that contains the result of the transfer operation.</returns>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.Transfer(Raspberry.IO.SerialPeripheralInterface.ISpiTransferBufferCollection)">
+            <summary>
+            Starts the SPI data transfer.
+            </summary>
+            <param name="transferBuffers">The transfer buffers that contain data to be send and/or the received data.</param>
+            <returns>An <see cref="T:System.Int32"/> that contains the result of the transfer operation.</returns>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.Delay">
+            <summary>
+            If nonzero, how long to delay (in µ seconds) after the last bit transfer before optionally deselecting the device before the next transfer.
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.MaxSpeed">
+            <summary>
+            Maximum clock speed in Hz.
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.Mode">
+            <summary>
+            SPI mode
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.INativeSpiConnection.BitsPerWord">
+            <summary>
+            The device's wordsize
+            </summary>
+        </member>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.Endianness">
+            <summary>
+            Represents the endianness of a SPI communication.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.Endianness.LittleEndian">
+            <summary>
+            The communication is little endian.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.Endianness.BigEndian">
+            <summary>
+            The communication is big endian.
+            </summary>
+        </member>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.SpiTransferControlStructure">
+            <summary>
+            A IOCTL structure that describes a single SPI transfer
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferControlStructure.Tx">
+            <summary>
+            Holds pointer to userspace buffer with transmit data, or 0. If no data is provided, zeroes are shifted out
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferControlStructure.Rx">
+            <summary>
+            Holds pointer to userspace buffer for receive data, or 0
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferControlStructure.Length">
+            <summary>
+            Length of <see cref="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferControlStructure.Tx"/> and <see cref="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferControlStructure.Rx"/> buffers, in bytes
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferControlStructure.Speed">
+            <summary>
+            Temporary override of the device's bitrate (in Hz)
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferControlStructure.Delay">
+            <summary>
+            If nonzero, how long to delay (in µ seconds) after the last bit transfer before optionally deselecting the device before the next transfer
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferControlStructure.BitsPerWord">
+            <summary>
+            Temporary override of the device's wordsize
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferControlStructure.ChipSelectChange">
+            <summary>
+            Set to <c>true</c> to deselect device before starting the next transfer
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiTransferControlStructure.Pad">
+            <summary>
+            Pad
+            </summary>
+        </member>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer">
+            <summary>
+            A transfer buffer used to read from / write to the SPI bus.
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer.BitsPerWord">
+            <summary>
+            Temporary override of the device's wordsize
+            </summary>
+            <value>
+            The bits per word.
+            </value>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer.Speed">
+            <summary>
+            Temporary override of the device's bitrate (in Hz)
+            </summary>
+            <value>
+            The speed.
+            </value>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer.Delay">
+            <summary>
+            If nonzero, how long to delay (in µ seconds) after the last bit transfer before optionally deselecting the device before the next transfer.
+            </summary>
+            <value>
+            The delay.
+            </value>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer.ChipSelectChange">
+            <summary>
+            Set to <c>true</c> to deselect device before starting the next transfer.
+            </summary>
+            <value>
+              <c>true</c> if device is delected before starting next transfer; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer.Pad">
+            <summary>
+            Pad.
+            </summary>
+            <value>
+            The pad.
+            </value>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer.TransferMode">
+            <summary>
+            Specifies if the transfer shall read and/or write. <see cref="T:Raspberry.IO.SerialPeripheralInterface.SpiTransferMode"/>
+            </summary>
+            <value>
+            The transfer mode.
+            </value>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer.Length">
+            <summary>
+            Length of <see cref="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer.Tx"/> and <see cref="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer.Rx"/> buffers, in bytes
+            </summary>
+            <value>
+            The length.
+            </value>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer.Tx">
+            <summary>
+            Holds pointer to userspace buffer with transmit data, or <c>null</c>. If no data is provided, zeroes are shifted out
+            </summary>
+            <value>
+            The tx.
+            </value>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer.Rx">
+            <summary>
+            Holds pointer to userspace buffer for receive data, or <c>null</c>
+            </summary>
+            <value>
+            The rx.
+            </value>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer.ControlStructure">
+            <summary>
+            The IOCTL structure that contains control information for a single SPI transfer
+            </summary>
+            <value>
+            The control structure.
+            </value>
+        </member>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBufferCollection">
+            <summary>
+            A collection of transfer buffers that can be used to read from / write to the SPI bus.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBufferCollection.Get(System.Int32)">
+            <summary>
+            A method that returns a specific <see cref="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer"/> from the collection.
+            </summary>
+            <param name="index">Index</param>
+            <returns>The requested <see cref="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer"/></returns>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBufferCollection.Length">
+            <summary>
+            Number of <see cref="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer"/> structures.
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBufferCollection.Item(System.Int32)">
+            <summary>
+            Can be used to request a specific <see cref="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer"/> from the collection.
+            </summary>
+            <param name="index">Index</param>
+            <returns>The requested <see cref="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer"/></returns>
+        </member>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection">
+            <summary>
+            Native SPI connection that communicates with Linux's userspace SPI driver (e.g. /dev/spidev0.0) using IOCTL.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.#ctor(Raspberry.IO.Interop.IControlDevice)">
+            <summary>
+            Creates a new instance of the <see cref="T:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection"/> class.
+            </summary>
+            <param name="deviceFile">A control device (IOCTL) to the device file (e.g. /dev/spidev0.0).</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.#ctor(Raspberry.IO.Interop.IControlDevice,Raspberry.IO.SerialPeripheralInterface.SpiConnectionSettings)">
+            <summary>
+            Creates a new instance of the <see cref="T:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection"/> class and initializes it.
+            </summary>
+            <param name="deviceFile">A control device (IOCTL) to the device file (e.g. /dev/spidev0.0).</param>
+            <param name="settings">Connection settings</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.#ctor(System.String,Raspberry.IO.SerialPeripheralInterface.SpiConnectionSettings)">
+            <summary>
+            Creates a new instance of the <see cref="T:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection"/> class and initializes it.
+            </summary>
+            <param name="deviceFilePath">Full path to the SPI device file (e.g. /dev/spidev0.0).</param>
+            <param name="settings">Connection settings</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.#ctor(System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection"/> class.
+            </summary>
+            <param name="deviceFilePath">Full path to the SPI device file (e.g. /dev/spidev0.0).</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.Dispose">
+            <summary>
+            Dispose instance and free all resources.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.Dispose(System.Boolean)">
+            <summary>
+            Disposes the instance.
+            </summary>
+            <param name="disposing">If <c>true</c> all managed resources will be disposed</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.SetDelay(System.UInt16)">
+            <summary>
+            Sets the <see cref="P:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.Delay"/>.
+            </summary>
+            <param name="delayInMicroSeconds">Delay in µsec.</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.SetMaxSpeed(System.UInt32)">
+            <summary>
+            Sets the maximum clock speed.
+            </summary>
+            <param name="maxSpeedInHz">The speed in Hz</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.SetBitsPerWord(System.Byte)">
+            <summary>
+            Sets the device's wordsize <see cref="P:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.BitsPerWord"/>.
+            </summary>
+            <param name="wordSize">Bits per word</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.SetSpiMode(Raspberry.IO.SerialPeripheralInterface.SpiMode)">
+            <summary>
+            Sets the <see cref="T:Raspberry.IO.SerialPeripheralInterface.SpiMode"/>.
+            </summary>
+            <param name="spiMode">SPI mode</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.CreateTransferBuffer(System.Int32,Raspberry.IO.SerialPeripheralInterface.SpiTransferMode)">
+            <summary>
+            Creates a transfer buffer of the given <see paramref="sizeInBytes"/> and copies the connection settings to it.
+            </summary>
+            <param name="sizeInBytes">Memory size in bytes.</param>
+            <param name="transferMode">The transfer mode.</param>
+            <returns>The requested transfer buffer.</returns>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.CreateTransferBufferCollection(System.Int32,System.Int32,Raspberry.IO.SerialPeripheralInterface.SpiTransferMode)">
+            <summary>
+            Creates transfer buffers for <paramref name="numberOfMessages"/>.
+            </summary>
+            <param name="numberOfMessages">The number of messages to send.</param>
+            <param name="messageSizeInBytes">Message size in bytes.</param>
+            <param name="transferMode">The transfer mode.</param>
+            <returns>The requested transfer buffer collection.</returns>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.Transfer(Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer)">
+            <summary>
+            Starts the SPI data transfer.
+            </summary>
+            <param name="buffer">The transfer buffer that contains data to be send and/or the received data.</param>
+            <returns>An <see cref="T:System.Int32"/> that contains the result of the transfer operation.</returns>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.Transfer(Raspberry.IO.SerialPeripheralInterface.ISpiTransferBufferCollection)">
+            <summary>
+            Starts the SPI data transfer.
+            </summary>
+            <param name="transferBuffers">The transfer buffers that contain data to be send and/or the received data.</param>
+            <returns>An <see cref="T:System.Int32"/> that contains the result of the transfer operation.</returns>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.Delay">
+            <summary>
+            If nonzero, how long to delay (in µ seconds) after the last bit transfer before optionally deselecting the device before the next transfer.
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.MaxSpeed">
+            <summary>
+            Maximum clock speed in Hz.
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.Mode">
+            <summary>
+            SPI mode
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.NativeSpiConnection.BitsPerWord">
+            <summary>
+            The device's wordsize
+            </summary>
+        </member>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.SpiConnection">
+            <summary>
+            Represents a connection to a SPI device.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiConnection.#ctor(Raspberry.IO.IOutputBinaryPin,Raspberry.IO.IOutputBinaryPin,Raspberry.IO.IInputBinaryPin,Raspberry.IO.IOutputBinaryPin,Raspberry.IO.SerialPeripheralInterface.Endianness)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Raspberry.IO.SerialPeripheralInterface.SpiConnection"/> class.
+            </summary>
+            <param name="clockPin">The clock pin.</param>
+            <param name="selectSlavePin">The select slave pin.</param>
+            <param name="misoPin">The miso pin.</param>
+            <param name="mosiPin">The mosi pin.</param>
+            <param name="endianness">The endianness.</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiConnection.System#IDisposable#Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiConnection.Close">
+            <summary>
+            Closes this instance.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiConnection.SelectSlave">
+            <summary>
+            Selects the slave device.
+            </summary>
+            <returns>The slave selection context.</returns>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiConnection.Synchronize">
+            <summary>
+            Synchronizes the devices.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiConnection.Write(System.Boolean)">
+            <summary>
+            Writes the specified bit to the device.
+            </summary>
+            <param name="data">The data.</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiConnection.Write(System.Byte,System.Int32)">
+            <summary>
+            Writes the specified data.
+            </summary>
+            <param name="data">The data.</param>
+            <param name="bitCount">The bit count.</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiConnection.Write(System.UInt16,System.Int32)">
+            <summary>
+            Writes the specified data.
+            </summary>
+            <param name="data">The data.</param>
+            <param name="bitCount">The bit count.</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiConnection.Write(System.UInt32,System.Int32)">
+            <summary>
+            Writes the specified data.
+            </summary>
+            <param name="data">The data.</param>
+            <param name="bitCount">The bit count.</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiConnection.Write(System.UInt64,System.Int32)">
+            <summary>
+            Writes the specified data.
+            </summary>
+            <param name="data">The data.</param>
+            <param name="bitCount">The bit count.</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiConnection.Read">
+            <summary>
+            Reads a bit from the device.
+            </summary>
+            <returns>The bit status.</returns>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiConnection.Read(System.Int32)">
+            <summary>
+            Reads the specified number of bits from the device.
+            </summary>
+            <param name="bitCount">The bit count.</param>
+            <returns>The read value.</returns>
+        </member>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.SpiMode">
+            <summary>
+            SPI mode
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.ClockPhase">
+            <summary>
+            Clock phase, if set CPHA=1, otherwise CPHA=0.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.ClockPolarity">
+            <summary>
+            Clock polarity, if set CPOL=1, otherwise CPOL=0.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.ChipSelectActiveHigh">
+            <summary>
+            Chip select is a high signal.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.LeastSignificantBitFirst">
+            <summary>
+            The least significant bit comes first.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.ThreeWire">
+            <summary>
+            Special 3-wire configuration.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.SlaveInOutShared">
+            <summary>
+            Three-wire serial buses
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.Loopback">
+            <summary>
+            Loopback
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.NoChipSelect">
+            <summary>
+            Send no chip select signal.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.Ready">
+            <summary>
+            Slave pulls low to pause.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.SlavePullsLowToPause">
+            <summary>
+            Slave pulls low to pause.
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.Mode0">
+            <summary>
+            CPOL=0, CPHA=0
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.Mode1">
+            <summary>
+            CPOL=0, CPHA=1
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.Mode2">
+            <summary>
+            CPOL =1, CPHA=0
+            </summary>
+        </member>
+        <member name="F:Raspberry.IO.SerialPeripheralInterface.SpiMode.Mode3">
+            <summary>
+            CPOL=1, CPHA=1
+            </summary>
+        </member>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.SpiConnectionSettings">
+            <summary>
+            SPI connection parameters
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiConnectionSettings.MaxSpeed">
+            <summary>
+            Clock speed in Hz
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiConnectionSettings.Delay">
+            <summary>
+            If nonzero, how long to delay (in µ seconds) after the last bit transfer before optionally deselecting the device before the next transfer
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiConnectionSettings.BitsPerWord">
+            <summary>
+            The device's word size
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiConnectionSettings.Mode">
+            <summary>
+            SPI mode
+            </summary>
+        </member>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.SpiSlaveSelectionContext">
+            <summary>
+            Represents a SPI slave selection context.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiSlaveSelectionContext.System#IDisposable#Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer">
+            <summary>
+            A transfer buffer used to read from / write to the SPI bus.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.#ctor(System.Int32,Raspberry.IO.SerialPeripheralInterface.SpiTransferMode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer"/> class.
+            </summary>
+            <param name="lengthInBytes">Size of data that shall be transmitted.</param>
+            <param name="transferMode">Specifies read and/or write mode.</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.Finalize">
+            <summary>
+            Finalizer for <see cref="T:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer"/>
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.Dispose">
+            <summary>
+            Release all unmanaged memory.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.Dispose(System.Boolean)">
+            <summary>
+            Dispose the instance.
+            </summary>
+            <param name="disposing">The memory will always be released to avoid memory leaks. If you don't want this, don't call this method (<see cref="M:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.Dispose(System.Boolean)"/>) in your derived class.</param>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.BitsPerWord">
+            <summary>
+            Temporary override of the device's wordsize
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.Speed">
+            <summary>
+            Temporary override of the device's bitrate (in Hz)
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.Delay">
+            <summary>
+            If nonzero, how long to delay (in µ seconds) after the last bit transfer before optionally deselecting the device before the next transfer.
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.ChipSelectChange">
+            <summary>
+            Set to <c>true</c> to deselect device before starting the next transfer.
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.Pad">
+            <summary>
+            Pad
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.TransferMode">
+            <summary>
+            Specifies if the transfer shall read and/or write. <see cref="T:Raspberry.IO.SerialPeripheralInterface.SpiTransferMode"/>
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.Length">
+            <summary>
+            Length of <see cref="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.Tx"/> and <see cref="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.Rx"/> buffers, in bytes
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.Tx">
+            <summary>
+            Holds pointer to userspace buffer with transmit data, or <c>null</c>. If no data is provided, zeroes are shifted out
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.Rx">
+            <summary>
+            Holds pointer to userspace buffer for receive data, or <c>null</c>
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBuffer.ControlStructure">
+            <summary>
+            The IOCTL structure that contains control information for a single SPI transfer
+            </summary>
+        </member>
+        <member name="T:Raspberry.IO.SerialPeripheralInterface.SpiTransferBufferCollection">
+            <summary>
+            A collection of transfer buffers that can be used to read from / write to the SPI bus.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiTransferBufferCollection.#ctor(System.Int32,System.Int32,Raspberry.IO.SerialPeripheralInterface.SpiTransferMode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Raspberry.IO.SerialPeripheralInterface.SpiTransferBufferCollection"/> class.
+            </summary>
+            <param name="numberOfMessages">Number of tranfer messages</param>
+            <param name="messageLengthInBytes">Message size in bytes</param>
+            <param name="transferMode">Transfer mode</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiTransferBufferCollection.Finalize">
+            <summary>
+            Finalizer for <see cref="T:Raspberry.IO.SerialPeripheralInterface.SpiTransferBufferCollection"/>
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiTransferBufferCollection.Dispose">
+            <summary>
+            Disposes the collection of <see cref="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer"/>.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiTransferBufferCollection.Dispose(System.Boolean)">
+            <summary>
+            Dispose the collection of <see cref="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer"/>.
+            </summary>
+            <param name="disposing">If <c>true</c> all transfer buffers will be disposed.</param>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiTransferBufferCollection.Get(System.Int32)">
+            <summary>
+            A method that returns a specific <see cref="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer"/> from the collection.
+            </summary>
+            <param name="index">Index</param>
+            <returns>The requested <see cref="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer"/></returns>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiTransferBufferCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator.
+            </summary>
+            <returns>An enumerator</returns>
+        </member>
+        <member name="M:Raspberry.IO.SerialPeripheralInterface.SpiTransferBufferCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator.
+            </summary>
+            <returns>An enumerator</returns>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBufferCollection.Length">
+            <summary>
+            Number of <see cref="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer"/> structures.
+            </summary>
+        </member>
+        <member name="P:Raspberry.IO.SerialPeripheralInterface.SpiTransferBufferCollection.Item(System.Int32)">
+            <summary>
+            Can be used to request a specific <see cref="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer"/> from the collection.
+            </summary>
+            <param name="index">Index</param>
+            <returns>The requested <see cref="T:Raspberry.IO.SerialPeripheralInterface.ISpiTransferBuffer"/></returns>
+        </member>
+    </members>
+</doc>
