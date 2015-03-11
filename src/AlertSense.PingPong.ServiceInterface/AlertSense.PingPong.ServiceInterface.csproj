@@ -63,9 +63,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameService.cs" />
+    <Compile Include="GameServicePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AlertSense.PingPong.Common\AlertSense.PingPong.Common.csproj">
+      <Project>{a93fc2e3-31dc-4086-bfe2-57fd83fed9eb}</Project>
+      <Name>AlertSense.PingPong.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AlertSense.PingPong.Data\AlertSense.PingPong.Data.csproj">
+      <Project>{edecfad3-30b0-4cf9-bff0-3ea435227b93}</Project>
+      <Name>AlertSense.PingPong.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AlertSense.PingPong.Domain\AlertSense.PingPong.Domain.csproj">
+      <Project>{857513a3-8fef-491b-8255-f1221ac11e7f}</Project>
+      <Name>AlertSense.PingPong.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AlertSense.PingPong.ServiceModel\AlertSense.PingPong.ServiceModel.csproj">
       <Project>{53E82AC1-DD1D-4C66-B55F-F9F4ACFB2F40}</Project>
       <Name>AlertSense.PingPong.ServiceModel</Name>

@@ -11,7 +11,7 @@ namespace AlertSense.PingPong
         /// Base constructor requires a name and assembly to locate web service classes.
         /// </summary>
         public AppHost()
-            : base("AlertSense.PingPong", typeof(GameService).Assembly)
+            : base("AlertSense.PingPong", typeof(AppHost).Assembly)
         {
         }
 
@@ -22,6 +22,8 @@ namespace AlertSense.PingPong
         /// <param name="container"></param>
         public override void Configure(Container container)
         {
+            // register our game service, includes registering any dependencies that it needs within our plugin's configuration
+            Plugins.Add(new GameServicePlugin());
             //Config examples
             //this.Plugins.Add(new PostmanFeature());
             //this.Plugins.Add(new CorsFeature());
