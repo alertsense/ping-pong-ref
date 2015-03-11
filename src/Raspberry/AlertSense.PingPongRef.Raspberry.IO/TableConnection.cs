@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Raspberry.IO.GeneralPurpose;
 
 namespace AlertSense.PingPongRef.Raspberry.IO
@@ -23,9 +24,34 @@ namespace AlertSense.PingPongRef.Raspberry.IO
             if (Settings == null)
                 throw new Exception("Settings must not be null");
 
-            _gpioConnection = new GpioConnection(new GpioConnectionSettings { Driver = Settings.Driver });
+            Console.WriteLine("Allocate Input Pin");
+            Settings.Driver = GpioConnectionSettings.DefaultDriver;
+            Settings.Driver.Allocate(Settings.LeftBouncePin,PinDirection.Input);
+            Console.WriteLine("Pin Ready");
+            Thread.Sleep(1000);
+            var cnt = 0;
+            try
+            {
+                while (true)
+                {
+                    Console.WriteLine("Waiting for a bounce...");
+                    Settings.Driver.Wait(Settings.LeftBouncePin, true, 1000 * 60);
+                    cnt++;
+                    Console.WriteLine("Bounce {0}", cnt);
+                }
+            }
+            finally
+            {
+                Settings.Driver.Release(Settings.LeftBouncePin);
+            }
+            
+            //_gpioConnection = new GpioConnection(new GpioConnectionSettings { Driver = Settings.Driver, PollInterval = 1});
 
-            //TODO: Configure GPIO Pins from TableSettings
+            //var leftBouncePinConfig = Settings.LeftBouncePin.Input().OnStatusChanged(b => { if (b) Console.WriteLine("Left Bounce"); });
+            ////TODO: Configure GPIO Pins from TableSettings
+            //_gpioConnection.Add(leftBouncePinConfig);
+            //_gpioConnection.Open();
+
         }
 
         public void Close()

@@ -17,6 +17,7 @@ namespace AlertSense.PingPongRef.Raspberry.IO
                 throw new Exception("ITableConnection not registered with factory");
 
             var tableConnection = (ITableConnection) Activator.CreateInstance(connectionType);
+            Console.WriteLine("Setting the Settings");
             tableConnection.Settings = TableSettings.Default;
             return tableConnection;
         }

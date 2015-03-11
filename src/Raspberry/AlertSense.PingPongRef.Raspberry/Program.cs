@@ -13,10 +13,11 @@ namespace AlertSense.PingPongRef.Raspberry
             ConnectionFactory.AddConnection<ITableConnection, TableConnection>();
 
             using (var table = ConnectionFactory.GetTableConnection()) {
-                table.Open();
-
                 Console.WriteLine(Resources.Instructions);
+
+                table.Open();
                 Console.ReadLine();
+
             }
         }
     }
