@@ -11,7 +11,7 @@ namespace AlertSense.PingPong.ServiceInterface
 {
     public class GameService : Service, IGameService
     {
-        public IGameManager GameManager { get; set; }        
+        public IGameManager GameManager { get; set; }
 
         public GameSummaryResponse Post(GetGameSummaryRequest request)
         {
@@ -23,7 +23,22 @@ namespace AlertSense.PingPong.ServiceInterface
             throw new NotImplementedException();
         }
 
-        public CreatePointResponse Post(CreatePoint request)
+        public CreateGameResponse Post(CreateGameRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ResetGameResponse Post(ResetGameRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public CreatePointResponse Post(CreatePointRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public RemoveLastPointResponse Delete(RemoveLastPointRequest request)
         {
             throw new NotImplementedException();
         }

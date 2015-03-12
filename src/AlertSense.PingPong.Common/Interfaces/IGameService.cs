@@ -9,16 +9,25 @@ namespace AlertSense.PingPong.Common.Interfaces
 {
     public interface IGameService
     {
-        //[Route("/Games", "GET")]        
+        // /Games        
         GameSummaryResponse Post(GetGameSummaryRequest request);
 
-        // [Route("/Games", "POST", Summary = "Start a new Ping Pong game.")]
+        // /Games/{Id}
         GameResponse Post(GetGameRequest request);
 
-        // [Route("/Games/{Id}/Point", "POST", Summary = "Create a new point associated with a game.")]
-        CreatePointResponse Post(CreatePoint request);
+        // /Games/
+        CreateGameResponse Post(CreateGameRequest request);
 
-        // [Route("/Games/{Id}/Bounce", "POST", Summary = "Create a new bounce associated with a game.")]
+        // /Games/{Id}/Reset
+        ResetGameResponse Post(ResetGameRequest request);
+
+        // /Games/{Id}/Point
+        CreatePointResponse Post(CreatePointRequest request);
+
+        // /Games/{Id}/Point
+        RemoveLastPointResponse Delete(RemoveLastPointRequest request);
+
+        // /Games/{Id}/Bounce
         CreateBounceResponse Post(CreateBounceRequest request);
     }
 }

@@ -71,6 +71,8 @@
     <Compile Include="Models\PlayerModel.cs" />
     <Compile Include="Models\PointModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RemovePoint.cs" />
+    <Compile Include="ResetGame.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
