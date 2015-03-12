@@ -11,9 +11,9 @@ namespace AlertSense.PingPong.Domain.Factories
         {
             return new Game
             {
-                GameId = new Guid(),
+                Id = new Guid(),
                 InitialServer = ChooseInitialServer(),
-                Players = new[]
+                Players = new List<Player>
                         {
                             new Player { Name = "Player One", Score = 0, History = new List<Point>() },
                             new Player { Name = "Player Two", Score = 0, History = new List<Point>() }

@@ -13,7 +13,7 @@ namespace AlertSense.PingPong.Domain.Tests.Factories
         {
             var newGame = GameFactory.Create();
 
-            Assert.That(newGame.GameId, Is.Not.Null);
+            Assert.That(newGame.Id, Is.Not.Null);
             Assert.That(newGame.GameState, Is.EqualTo(GameState.InProgress));
             Assert.That(newGame.InitialServer, Is.Not.Null);
 
