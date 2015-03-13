@@ -1,3 +1,4 @@
+using AlertSense.PingPong.ServiceModel.Models;
 using ServiceStack;
 
 namespace AlertSense.PingPong.ServiceModel
@@ -8,7 +9,7 @@ namespace AlertSense.PingPong.ServiceModel
 
     }
 
-    public class CreateGameResponse : GameResponse
+    public class CreateGameResponse : GameModel
     {
         
     }

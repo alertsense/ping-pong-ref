@@ -4,11 +4,14 @@ using AlertSense.PingPong.Common.Interfaces;
 using AlertSense.PingPong.Domain.Factories;
 using AlertSense.PingPong.Common.Entities;
 using AlertSense.PingPong.ServiceModel.Enums;
-
+using AlertSense.PingPong.ServiceModel.Models;
+using ServiceStack;
+using AlertSense.PingPong.Common.Extensions;
 namespace AlertSense.PingPong.Domain
 {
     public class GameManager : IGameManager
     {
+        public IGameRepository GameRepository { get; set; }
         // Lazily instantiate a Game if one is not provided
         private Game _game;
 
@@ -23,6 +26,7 @@ namespace AlertSense.PingPong.Domain
             var playerAwarded = (int)point.SideToAward;
             Game.Players[playerAwarded].Score++;
             Game.Players[playerAwarded].History.Add(point);
+            Game.Points.Add(point);
             UpdateGameState();
         }
 
@@ -72,11 +76,29 @@ namespace AlertSense.PingPong.Domain
                     Game.GameState = GameState.Complete;
                 }
             }
+
+            if(GameRepository != null)
+                GameRepository.SaveGame(Game);
+
         }
 
         private static bool IsOdd(int value)
         {
             return value % 2 > 0;
+        }
+
+        public GameModel GetGameModel()
+        {
+            GameRepository.SaveGame(Game);
+
+            var model = Game.ToGameModel();
+
+            return model;
+        }
+
+        public void AwardPoint(PointModel point)
+        {
+            throw new NotImplementedException();
         }
     }
 }

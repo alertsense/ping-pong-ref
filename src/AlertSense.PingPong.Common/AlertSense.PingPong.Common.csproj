@@ -59,7 +59,9 @@
   <ItemGroup>
     <Compile Include="Entities\Game.cs" />
     <Compile Include="Entities\Player.cs" />
+    <Compile Include="Entities\Bounce.cs" />
     <Compile Include="Entities\Point.cs" />
+    <Compile Include="Extensions\Mappers.cs" />
     <Compile Include="Interfaces\IAuditEntity.cs" />
     <Compile Include="Interfaces\IGameManager.cs" />
     <Compile Include="Interfaces\IGameRepository.cs" />
