@@ -1,7 +1,10 @@
-﻿using AlertSense.PingPong.Common.Interfaces;
+﻿using AlertSense.PingPong.Common.Entities;
+using AlertSense.PingPong.Common.Interfaces;
 using AlertSense.PingPong.Data;
 using AlertSense.PingPong.Domain;
 using ServiceStack;
+using ServiceStack.Data;
+using ServiceStack.OrmLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +18,16 @@ namespace AlertSense.PingPong.ServiceInterface
         public void Register(IAppHost appHost)
         {
             var container = appHost.GetContainer();
+
+            container.Register<IDbConnectionFactory>(c => new OrmLiteConnectionFactory(":memory:", SqliteDialect.Provider));
+
+            using(var db = container.Resolve<IDbConnectionFactory>().OpenDbConnection())
+            {
+                db.CreateTableIfNotExists<Game>();
+                db.CreateTableIfNotExists<Point>();
+                db.CreateTableIfNotExists<Bounce>();
+                db.CreateTableIfNotExists<Player>();
+            }
 
             // register our dependencies for the service
             container.RegisterAs<GameRepository, IGameRepository>();

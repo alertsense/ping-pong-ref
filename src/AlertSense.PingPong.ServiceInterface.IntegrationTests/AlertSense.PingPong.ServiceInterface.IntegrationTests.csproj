@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{801A0F89-D5F6-49A6-BCEA-6624388C98A4}</ProjectGuid>
+    <ProjectGuid>{F31E6D06-D189-45B0-8713-DE5071015811}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AlertSense.PingPong.ServiceInterface</RootNamespace>
-    <AssemblyName>AlertSense.PingPong.ServiceInterface</AssemblyName>
+    <RootNamespace>AlertSense.PingPong.ServiceInterface.IntegrationTests</RootNamespace>
+    <AssemblyName>AlertSense.PingPong.ServiceInterface.IntegrationTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -32,38 +32,37 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mono.Data.Sqlite">
+    <Reference Include="Mono.Data.Sqlite, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ServiceStack.OrmLite.Sqlite.Mono.4.0.38\lib\net45\Mono.Data.Sqlite.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack, Version=4.0.38.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack">
       <HintPath>..\packages\ServiceStack.4.0.38\lib\net40\ServiceStack.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Client, Version=4.0.38.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ServiceStack.Client">
       <HintPath>..\packages\ServiceStack.Client.4.0.38\lib\net40\ServiceStack.Client.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Common, Version=4.0.38.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ServiceStack.Common">
       <HintPath>..\packages\ServiceStack.Common.4.0.38\lib\net40\ServiceStack.Common.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Interfaces, Version=4.0.0.0, Culture=neutral, PublicKeyToken=e06fbc6124f57c43, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ServiceStack.Interfaces">
       <HintPath>..\packages\ServiceStack.Interfaces.4.0.38\lib\portable-wp80+sl5+net40+win8+monotouch+monoandroid\ServiceStack.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.OrmLite, Version=4.0.38.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ServiceStack.OrmLite.4.0.38\lib\net45\ServiceStack.OrmLite.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.OrmLite.Sqlite">
+    <Reference Include="ServiceStack.OrmLite.Sqlite, Version=4.0.38.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ServiceStack.OrmLite.Sqlite.Mono.4.0.38\lib\net45\ServiceStack.OrmLite.Sqlite.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text, Version=4.0.38.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ServiceStack.Text">
       <HintPath>..\packages\ServiceStack.Text.4.0.38\lib\net40\ServiceStack.Text.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Net" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -72,9 +71,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameService.cs" />
-    <Compile Include="GameServicePlugin.cs" />
+    <Compile Include="IntegrationAppHost.cs" />
+    <Compile Include="IntegrationTestBase.cs" />
+    <Compile Include="IntegrationTests\GameSequenceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AlertSense.PingPong.Common\AlertSense.PingPong.Common.csproj">
@@ -89,13 +92,14 @@
       <Project>{857513a3-8fef-491b-8255-f1221ac11e7f}</Project>
       <Name>AlertSense.PingPong.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AlertSense.PingPong.ServiceInterface\AlertSense.PingPong.ServiceInterface.csproj">
+      <Project>{801a0f89-d5f6-49a6-bcea-6624388c98a4}</Project>
+      <Name>AlertSense.PingPong.ServiceInterface</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AlertSense.PingPong.ServiceModel\AlertSense.PingPong.ServiceModel.csproj">
-      <Project>{53E82AC1-DD1D-4C66-B55F-F9F4ACFB2F40}</Project>
+      <Project>{53e82ac1-dd1d-4c66-b55f-f9f4acfb2f40}</Project>
       <Name>AlertSense.PingPong.ServiceModel</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="sqlite3.dll">

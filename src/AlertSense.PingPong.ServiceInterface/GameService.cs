@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using ServiceStack;
 using AlertSense.PingPong.Common.Interfaces;
 using AlertSense.PingPong.ServiceModel;
+using AlertSense.PingPong.ServiceModel.Models;
+using AlertSense.PingPong.Common.Entities;
 
 namespace AlertSense.PingPong.ServiceInterface
 {
@@ -25,7 +27,9 @@ namespace AlertSense.PingPong.ServiceInterface
 
         public CreateGameResponse Post(CreateGameRequest request)
         {
-            throw new NotImplementedException();
+            //GameManager.CreateNewGame().ConvertTo<GameModel>();
+
+            return GameManager.GetGameModel().ConvertTo<CreateGameResponse>();
         }
 
         public ResetGameResponse Post(ResetGameRequest request)
@@ -35,7 +39,9 @@ namespace AlertSense.PingPong.ServiceInterface
 
         public CreatePointResponse Post(CreatePointRequest request)
         {
-            throw new NotImplementedException();
+            GameManager.AwardPoint(new Point { GameId = request.GameId, SideToAward = request.ScoringSide });
+
+            return GameManager.GetGameModel().ConvertTo<CreatePointResponse>();
         }
 
         public RemoveLastPointResponse Delete(RemoveLastPointRequest request)
