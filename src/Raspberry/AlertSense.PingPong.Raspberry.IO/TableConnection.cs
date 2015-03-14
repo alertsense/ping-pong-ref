@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Raspberry.IO.GeneralPurpose;
+using System.ComponentModel;
 
 namespace AlertSense.PingPong.Raspberry.IO
 {
@@ -16,69 +17,44 @@ namespace AlertSense.PingPong.Raspberry.IO
 
     public class BounceEventArgs : EventArgs
     {
-        public TableSides Side { get; set; }
+        public BounceType Type { get; set; }
         public long ElapsedMilliseconds { get; set; }
     }
 
-    public enum TableSides
+    public enum BounceType
     {
         Left,
-        Right
+        Right,
+        Missing
     }
 
     public class TableConnection : ITableConnection
     {
-        //TODO: Add left and right bounce events
-
-        private GpioConnection _gpioConnection;
+        //private GpioConnection _gpioConnection;
 
         public event EventHandler<BounceEventArgs> Bounce;
         public TableSettings Settings { get; set; }
+
+        System.ComponentModel.BackgroundWorker bounceWorker;
+
 
         public void Open()
         {
             if (Settings == null)
                 throw new Exception("Settings must not be null");
 
-            //Settings.Driver = GpioConnectionSettings.DefaultDriver;
-            //var driver = GpioConnectionSettings.DefaultDriver;
-            //driver.Allocate(Settings.LeftReadyPin, PinDirection.Output);
-            //driver.Allocate(Settings.LeftButtonPin, PinDirection.Input);
-            ////for (int i = 0; i < 10; i++)
-            //while(true)
-            //{
-            //    driver.Wait(Settings.LeftButtonPin, true, 1000 * 60);
-            //    driver.Write(Settings.LeftReadyPin, true);
-            //    Thread.Sleep(200);
-            //    driver.Wait(Settings.LeftButtonPin, false, 1000 * 60);
-                
-            //    driver.Wait(Settings.LeftButtonPin, true, 1000 * 60);
-            //    driver.Write(Settings.LeftReadyPin, false);
-            //    Thread.Sleep(200);
-            //    driver.Wait(Settings.LeftButtonPin, false, 1000 * 60);
-            //}
 
-            //driver.Release(Settings.LeftReadyPin);
-            Console.WriteLine("Allocate Input Pin");
+            bounceWorker = new System.ComponentModel.BackgroundWorker();
+            bounceWorker.WorkerSupportsCancellation = true;
+            bounceWorker.WorkerReportsProgress = true;
+            bounceWorker.DoWork += bounceWorker_DoWork;
+            bounceWorker.ProgressChanged += bounceWorker_ProgressChanged;
+
             Settings.Driver = GpioConnectionSettings.DefaultDriver;
-            Settings.Driver.Allocate(Settings.LeftBouncePin, PinDirection.Input);
-            Console.WriteLine("Pin Ready");
-            var cnt = 0;
-            try
-            {
-                while (true)
-                {
-                    Console.WriteLine("Waiting for a bounce...");
-                    Settings.Driver.Wait(Settings.LeftBouncePin, true, 1000 * 60);
-                    cnt++;
-                    OnBounce(new BounceEventArgs{Side = TableSides.Left, ElapsedMilliseconds = -1});
-                }
-            }
-            finally
-            {
-                Settings.Driver.Release(Settings.LeftBouncePin);
-            }
-            
+
+
+            bounceWorker.RunWorkerAsync();
+            Console.WriteLine("Bounce worker running...");
             //_gpioConnection = new GpioConnection(new GpioConnectionSettings { Driver = Settings.Driver, PollInterval = 1});
 
             //var leftBouncePinConfig = Settings.LeftBouncePin.Input().OnStatusChanged(b => { if (b) Console.WriteLine("Left Bounce"); });
@@ -88,20 +64,46 @@ namespace AlertSense.PingPong.Raspberry.IO
 
         }
 
-        //private static async 
+        void bounceWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            OnBounce((BounceEventArgs)e.UserState);
+        }
 
-        //private static Task<bool> WaitForLeftBounceAsync(IGpioConnectionDriver driver, ProcessorPin pin, decimal timeout)
-        //{
-        //    return Task<bool>.Factory.StartNew(() =>
-        //        {
-        //            driver.Wait(pin, true, timeout);
-        //            return true;
-        //        });
-        //}
+        void bounceWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            Console.WriteLine("Begin bounceWorker_DoWork");
+            var worker = sender as BackgroundWorker;
+            Settings.Driver.Allocate(Settings.LeftBouncePin, PinDirection.Input);
+            Console.WriteLine("Allocated pin {0} for input.", Settings.LeftBouncePin);
+            try
+            {
+                while (!worker.CancellationPending)
+                {
+                    if (Settings.Driver.Read(Settings.LeftBouncePin))
+                        worker.ReportProgress(0, new BounceEventArgs { Type = BounceType.Left, ElapsedMilliseconds = -1 });
+                    Thread.Sleep(100);
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error: {0}", ex.Message);
+            }
+            finally
+            {
+                Settings.Driver.Release(Settings.LeftBouncePin);
+                Console.WriteLine("Released pin {0}.", Settings.LeftBouncePin);
+            }
+
+            if (worker.CancellationPending)
+                e.Cancel = true;
+            Console.WriteLine("End bounceWorker_DoWork");
+        }
 
         public void Close()
         {
-            _gpioConnection.Close();
+            //_gpioConnection.Close();
+            Console.WriteLine("Closing TableConnection");
+            bounceWorker.CancelAsync();
         }
 
         public void Dispose()

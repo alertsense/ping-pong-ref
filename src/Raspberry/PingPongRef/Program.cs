@@ -24,7 +24,7 @@ namespace AlertSense.PingPong.Raspberry
 
         static void table_Bounce(object sender, BounceEventArgs e)
         {
-            Console.WriteLine("Bounce: {{Side: {0}, Elapsed: {1}}}", e.Side, e.ElapsedMilliseconds);
+            Console.WriteLine("Bounce: {{Side: {0}, Elapsed: {1}}}", e.Type, e.ElapsedMilliseconds);
         }
     }
 }
