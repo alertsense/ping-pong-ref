@@ -9,23 +9,23 @@ namespace AlertSense.PingPong.Raspberry.IO
 {
     public interface ITableConnection: IDisposable
     {
-        event EventHandler<BounceEventArgs> Bounce;
         TableSettings Settings { get; set; }
+        void Led(bool on);
         void Open();
         void Close();
+
+        event EventHandler<BounceEventArgs> Bounce;
+        event EventHandler<ButtonEventArgs> ButtonPressed;
     }
 
     public class BounceEventArgs : EventArgs
     {
-        public BounceType Type { get; set; }
-        public long ElapsedMilliseconds { get; set; }
+
     }
 
-    public enum BounceType
+    public class ButtonEventArgs: EventArgs
     {
-        Left,
-        Right,
-        Missing
+
     }
 
     public class TableConnection : ITableConnection
@@ -33,6 +33,7 @@ namespace AlertSense.PingPong.Raspberry.IO
         //private GpioConnection _gpioConnection;
 
         public event EventHandler<BounceEventArgs> Bounce;
+        public event EventHandler<ButtonEventArgs> ButtonPressed;
         public TableSettings Settings { get; set; }
 
         System.ComponentModel.BackgroundWorker bounceWorker;
@@ -42,17 +43,15 @@ namespace AlertSense.PingPong.Raspberry.IO
         {
             if (Settings == null)
                 throw new Exception("Settings must not be null");
-
+            Settings.Driver = GpioConnectionSettings.DefaultDriver;
+            Settings.Driver.Allocate(Settings.LeftLedPin, PinDirection.Output);
+            Console.WriteLine("Allocated pin {0} for output.", Settings.LeftLedPin);
 
             bounceWorker = new System.ComponentModel.BackgroundWorker();
             bounceWorker.WorkerSupportsCancellation = true;
             bounceWorker.WorkerReportsProgress = true;
             bounceWorker.DoWork += bounceWorker_DoWork;
             bounceWorker.ProgressChanged += bounceWorker_ProgressChanged;
-
-            Settings.Driver = GpioConnectionSettings.DefaultDriver;
-
-
             bounceWorker.RunWorkerAsync();
             Console.WriteLine("Bounce worker running...");
             //_gpioConnection = new GpioConnection(new GpioConnectionSettings { Driver = Settings.Driver, PollInterval = 1});
@@ -73,14 +72,14 @@ namespace AlertSense.PingPong.Raspberry.IO
         {
             Console.WriteLine("Begin bounceWorker_DoWork");
             var worker = sender as BackgroundWorker;
-            Settings.Driver.Allocate(Settings.LeftBouncePin, PinDirection.Input);
-            Console.WriteLine("Allocated pin {0} for input.", Settings.LeftBouncePin);
+            Settings.Driver.Allocate(Settings.LeftButtonPin, PinDirection.Input);
+            Console.WriteLine("Allocated pin {0} for input.", Settings.LeftButtonPin);
             try
             {
                 while (!worker.CancellationPending)
                 {
-                    if (Settings.Driver.Read(Settings.LeftBouncePin))
-                        worker.ReportProgress(0, new BounceEventArgs { Type = BounceType.Left, ElapsedMilliseconds = -1 });
+                    if (Settings.Driver.Read(Settings.LeftButtonPin))
+                        worker.ReportProgress(0, new BounceEventArgs ());
                     Thread.Sleep(100);
                 }
             }
@@ -102,6 +101,7 @@ namespace AlertSense.PingPong.Raspberry.IO
         public void Close()
         {
             //_gpioConnection.Close();
+            Settings.Driver.Release(Settings.LeftLedPin); 
             Console.WriteLine("Closing TableConnection");
             bounceWorker.CancelAsync();
         }
@@ -115,6 +115,17 @@ namespace AlertSense.PingPong.Raspberry.IO
         {
             if (Bounce != null)
                 Bounce(this, e);
+        }
+
+        private void OnButtonPressed(ButtonEventArgs e)
+        {
+            if (ButtonPressed != null)
+                ButtonPressed(this, e);
+        }
+        
+        public void Led(bool on)
+        {
+            Settings.Driver.Write(Settings.LeftLedPin, on);
         }
     }
 }

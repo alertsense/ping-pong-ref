@@ -6,6 +6,8 @@ namespace AlertSense.PingPong.Raspberry
 {
     class Program
     {
+        private static bool leftLedOn = false;
+
         static void Main(string[] args)
         {
             Console.WriteLine(Resources.Banner);
@@ -24,7 +26,11 @@ namespace AlertSense.PingPong.Raspberry
 
         static void table_Bounce(object sender, BounceEventArgs e)
         {
-            Console.WriteLine("Bounce: {{Side: {0}, Elapsed: {1}}}", e.Type, e.ElapsedMilliseconds);
+            var table = (ITableConnection)sender;
+            leftLedOn = !leftLedOn;
+            table.Led(leftLedOn);
+
+            Console.WriteLine("Bounce");
         }
     }
 }
