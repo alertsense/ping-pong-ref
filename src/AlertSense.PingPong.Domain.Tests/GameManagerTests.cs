@@ -1,5 +1,5 @@
-﻿using AlertSense.PingPong.Common.Entities;
-using AlertSense.PingPong.ServiceModel.Enums;
+﻿using AlertSense.PingPong.ServiceModel.Enums;
+using AlertSense.PingPong.ServiceModel.Models;
 using NUnit.Framework;
 using System;
 
@@ -19,35 +19,35 @@ namespace AlertSense.PingPong.Domain.Tests
             Assert.AreEqual(Side.One, manager.GetNextToServe());
 
             // award 1st point Score 1-0
-            var point = new Point { SideToAward = Side.One };
+            var point = new PointModel { SideToAward = Side.One };
             manager.AwardPoint(point);
             // SideOne serves 2nd point
             Assert.AreEqual(Side.One, manager.GetNextToServe());
 
             // award 2nd point  Score 2-0
-            manager.AwardPoint(new Point { SideToAward = Side.One });
+            manager.AwardPoint(new PointModel { SideToAward = Side.One });
             // SideTwo serves 3rd point
             Assert.AreEqual(Side.Two, manager.GetNextToServe());
 
             // award 3nd point  Score 3-0
-            manager.AwardPoint(new Point { SideToAward = Side.One });
+            manager.AwardPoint(new PointModel { SideToAward = Side.One });
             // SideTwo serves 4rd point
             Assert.AreEqual(Side.Two, manager.GetNextToServe());
 
             // award 4th point  Score 4-0
-            manager.AwardPoint(new Point { SideToAward = Side.One });
+            manager.AwardPoint(new PointModel { SideToAward = Side.One });
             // SideOne serves 4th point
             Assert.AreEqual(Side.One, manager.GetNextToServe());
 
             // award 5th point  Score 5-0
-            manager.AwardPoint(new Point { SideToAward = Side.One });
+            manager.AwardPoint(new PointModel { SideToAward = Side.One });
             // SideOne serves 5th point
             Assert.AreEqual(Side.One, manager.GetNextToServe());
 
             // award points 6-10
             for (int i = 6; i < 11; i++)
             {
-                manager.AwardPoint(new Point { SideToAward = Side.One });
+                manager.AwardPoint(new PointModel { SideToAward = Side.One });
             }
 
             // initial receiver should server 11th point
@@ -111,7 +111,7 @@ namespace AlertSense.PingPong.Domain.Tests
             manager.Game.Players[(int)Side.Two].Score = 14;
 
             // attempt to make score 12-15
-            Assert.Throws<ArgumentOutOfRangeException>(() => manager.AwardPoint(new Point { SideToAward = Side.Two }));
+            Assert.Throws<ArgumentOutOfRangeException>(() => manager.AwardPoint(new PointModel { SideToAward = Side.Two }));
         }
 
         //Verify game state changes to Complete when player achieves 11th point with 2 point margin
@@ -123,7 +123,7 @@ namespace AlertSense.PingPong.Domain.Tests
             manager.Game.Players[(int)Side.Two].Score = 7;
 
             Assert.AreEqual(manager.Game.GameState, GameState.InProgress);
-            manager.AwardPoint(new Point { SideToAward = Side.One });
+            manager.AwardPoint(new PointModel { SideToAward = Side.One });
 
             Assert.AreEqual(manager.Game.GameState, GameState.Complete);
         }
@@ -137,7 +137,7 @@ namespace AlertSense.PingPong.Domain.Tests
             manager.Game.Players[(int)Side.Two].Score = 10;
 
             Assert.AreEqual(manager.Game.GameState, GameState.InProgress);
-            manager.AwardPoint(new Point { SideToAward = Side.One });
+            manager.AwardPoint(new PointModel { SideToAward = Side.One });
 
             Assert.AreEqual(manager.Game.GameState, GameState.InProgress);
         }

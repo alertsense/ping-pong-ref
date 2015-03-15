@@ -1,9 +1,4 @@
 ﻿using AlertSense.PingPong.ServiceModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AlertSense.PingPong.Common.Interfaces
 {
@@ -21,7 +16,9 @@ namespace AlertSense.PingPong.Common.Interfaces
         // /Games/{Id}/Reset
         ResetGameResponse Post(ResetGameRequest request);
 
-        // /Games/{Id}/Point
+
+        // Used In 1st Code Camp Session To Manually Increment Point
+        //Games/{Id}/Point
         CreatePointResponse Post(CreatePointRequest request);
 
         // /Games/{Id}/Point

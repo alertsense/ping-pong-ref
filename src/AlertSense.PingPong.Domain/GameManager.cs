@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using AlertSense.PingPong.Common.Interfaces;
 using AlertSense.PingPong.Domain.Factories;
 using AlertSense.PingPong.Common.Entities;
@@ -13,23 +14,81 @@ namespace AlertSense.PingPong.Domain
     {
         public IGameRepository GameRepository { get; set; }
         // Lazily instantiate a Game if one is not provided
-        private Game _game;
+        private GameModel _game;
 
-        public Game Game
+        public GameModel Game
         {
             get { return _game ?? (_game = GameFactory.Create()); }
             set { _game = value; }
         }
 
-        public void AwardPoint(Point point)
+        public ScoreModel GetScore()
         {
-            var playerAwarded = (int)point.SideToAward;
-            Game.Players[playerAwarded].Score++;
-            Game.Players[playerAwarded].History.Add(point);
-            Game.Points.Add(point);
-            UpdateGameState();
+            var score = new ScoreModel
+            {
+                SideOne = Game.Players[(int) Side.One].Score,
+                SideTwo = Game.Players[(int)Side.Two].Score
+            };
+          
+            return score;
         }
 
+        public IList<PointModel> GetPoints()
+        {
+            return Game.Points;
+        }
+
+        public void ProcessBounce(BounceModel bounce)
+        {
+            if (bounce.Side != Side.None)
+            {
+                Game.CurrentPoint.Bounces.Add(bounce);
+            }
+            // Special case the serve
+            if (Game.IsServe)
+            {
+                // check for off the table bounce or receiver side bounce
+                if (bounce.Side != Game.Striker)
+                {
+                    // award point to the receiver  
+                    Game.CurrentPoint.SideToAward = Game.NotStriker;
+                    AwardPoint(Game.CurrentPoint);
+                  
+                }
+                else
+                {
+                   // otherwise the ball bounced on the server side as expected and play continues
+                   Game.IsServe = false;
+                }
+
+                // striker does not change
+            }
+            else  // Not the serve
+            {
+                // Handle off the table bounce
+                if (bounce.Side == Side.None || bounce.Side == Game.Striker )
+                {
+                    // award point to the non-striker
+                    Game.CurrentPoint.SideToAward = Game.NotStriker;
+                    AwardPoint(Game.CurrentPoint);
+
+                }
+                else //play continues
+                {
+                   Game.ChangeStriker();
+                }
+
+            }
+
+            if (GameRepository != null)
+                GameRepository.SaveGame(Game.ConvertTo<Game>()); 
+
+        }
+
+        /// <summary>
+        /// Public method just for testing
+        /// </summary>
+        /// <returns></returns>
         public Side GetNextToServe()
         {
             Side server;
@@ -58,7 +117,10 @@ namespace AlertSense.PingPong.Domain
             return server;
         }
 
-        private void UpdateGameState()
+
+       
+
+        private bool IsGameOver()
         {
             var playerOneScore = Game.Players[(int)Side.One].Score;
             var playerTwoScore = Game.Players[(int)Side.Two].Score;
@@ -69,17 +131,10 @@ namespace AlertSense.PingPong.Domain
                 throw new ArgumentOutOfRangeException();
             }
 
-            if (Math.Abs(playerOneScore - playerTwoScore) > 2)
-            {
-                if ((playerOneScore >= 11) || (playerTwoScore >= 11))
-                {
-                    Game.GameState = GameState.Complete;
-                }
-            }
-
-            if(GameRepository != null)
-                GameRepository.SaveGame(Game);
-
+            if (Math.Abs(playerOneScore - playerTwoScore) < 2) return false;
+            if ((playerOneScore < 11) && (playerTwoScore < 11)) return false;
+            Game.GameState = GameState.Complete;
+            return true;
         }
 
         private static bool IsOdd(int value)
@@ -89,16 +144,25 @@ namespace AlertSense.PingPong.Domain
 
         public GameModel GetGameModel()
         {
-            GameRepository.SaveGame(Game);
-
-            var model = Game.ToGameModel();
-
-            return model;
+ 
+            return Game;
         }
 
         public void AwardPoint(PointModel point)
         {
-            throw new NotImplementedException();
+            var playerAwarded = (int)point.SideToAward;
+            Game.Players[playerAwarded].Score++;
+            Game.Players[playerAwarded].History.Add(point);
+            Game.Points.Add(point);
+            if (! IsGameOver())
+            {
+                Game.Striker = GetNextToServe();
+            }
+
+            // next bounce is a server
+            Game.IsServe = true;
+            Game.CurrentPoint = new PointModel {Bounces = new List<BounceModel>()};
+
         }
     }
 }

@@ -39,7 +39,7 @@ namespace AlertSense.PingPong.ServiceInterface
 
         public CreatePointResponse Post(CreatePointRequest request)
         {
-            GameManager.AwardPoint(new Point { GameId = request.GameId, SideToAward = request.ScoringSide });
+            GameManager.AwardPoint(new PointModel { GameId = request.GameId, SideToAward = request.ScoringSide });
 
             return GameManager.GetGameModel().ConvertTo<CreatePointResponse>();
         }
@@ -51,7 +51,8 @@ namespace AlertSense.PingPong.ServiceInterface
 
         public CreateBounceResponse Post(CreateBounceRequest request)
         {
-            throw new NotImplementedException();
+            GameManager.ProcessBounce(request.ConvertTo<BounceModel>());
+            return GameManager.GetGameModel().ConvertTo<CreateBounceResponse>();
         }
     }
 }
