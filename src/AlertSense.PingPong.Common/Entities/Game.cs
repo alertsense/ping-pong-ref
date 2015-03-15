@@ -1,5 +1,6 @@
 ﻿using System;
 using AlertSense.PingPong.ServiceModel.Enums;
+using AlertSense.PingPong.ServiceModel.Models;
 using ServiceStack.Model;
 using System.Collections.Generic;
 using ServiceStack.DataAnnotations;
@@ -10,23 +11,25 @@ namespace AlertSense.PingPong.Common.Entities
     {
         public Game()
         {
-            Players = new List<Player>();
-            Points = new List<Point>();
-            Bounces = new List<Bounce>();
+            Players = new List<PlayerModel>();
+            Points = new List<PointModel>();
+            Bounces = new List<BounceModel>();
         }
 
         public Guid Id { get; set; }
 
         [Reference]
-        public List<Player> Players { get; set; }
+        public List<PlayerModel> Players { get; set; }
 
         [Reference]
-        public List<Point> Points { get; set; }
+        public List<PointModel> Points { get; set; }
 
         [Reference]
-        public List<Bounce> Bounces { get; set; }
+        public List<BounceModel> Bounces { get; set; }
 
         public Side InitialServer { get; set; }
+
+       
 
         public GameState GameState { get; set; }
     }

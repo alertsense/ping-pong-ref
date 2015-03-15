@@ -1,6 +1,8 @@
-﻿using AlertSense.PingPong.ServiceModel.Enums;
+﻿using System.Collections;
+using System.Collections.Generic;
+using AlertSense.PingPong.ServiceModel.Enums;
 using AlertSense.PingPong.ServiceModel.Models;
-using Point = AlertSense.PingPong.Common.Entities.Point;
+
 
 namespace AlertSense.PingPong.Common.Interfaces
 {
@@ -10,9 +12,12 @@ namespace AlertSense.PingPong.Common.Interfaces
 
         void AwardPoint(PointModel point);
 
+     //   Side GetNextToServe();
 
-        void AwardPoint(Point point);
+        void ProcessBounce(BounceModel bounce);
 
-        Side GetNextToServe();
+        ScoreModel GetScore();
+
+        IList<PointModel> GetPoints();
     }
 }

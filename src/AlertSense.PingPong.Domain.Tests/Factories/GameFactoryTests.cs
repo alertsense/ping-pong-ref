@@ -20,6 +20,10 @@ namespace AlertSense.PingPong.Domain.Tests.Factories
             Assert.That(newGame.Players.Count(), Is.EqualTo(2));
             Assert.That(newGame.Players[0].Score, Is.EqualTo(0));
             Assert.That(newGame.Players[0].Score, Is.EqualTo(0));
+
+            Assert.That(newGame.InitialServer, Is.EqualTo(newGame.Striker));
+
+            Assert.IsTrue(newGame.IsServe);
         }
     }
 }

@@ -74,6 +74,7 @@
     <Compile Include="Factories\GameFactoryTests.cs" />
     <Compile Include="GameManagerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GameManagerBounceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AlertSense.PingPong.Common\AlertSense.PingPong.Common.csproj">
