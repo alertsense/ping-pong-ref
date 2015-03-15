@@ -7,7 +7,7 @@
     <ProjectGuid>{A098FF80-F8BC-4242-A96D-EB0E9187B18E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AlertSense.PingPongRef.Raspberry</RootNamespace>
+    <RootNamespace>AlertSense.PingPong.Raspberry</RootNamespace>
     <AssemblyName>PingPongRef</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -25,7 +25,11 @@ namespace AlertSense.PingPong.Raspberry.IO
 
     public class ButtonEventArgs: EventArgs
     {
-
+        public ButtonEventArgs(bool enabled)
+        {
+            Enabled = enabled;
+        }
+        public bool Enabled { get; set; }
     }
 
     public class TableConnection : ITableConnection
@@ -38,6 +42,7 @@ namespace AlertSense.PingPong.Raspberry.IO
 
         System.ComponentModel.BackgroundWorker bounceWorker;
 
+        private bool lastButtonValue;
 
         public void Open()
         {
@@ -65,7 +70,10 @@ namespace AlertSense.PingPong.Raspberry.IO
 
         void bounceWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
-            OnBounce((BounceEventArgs)e.UserState);
+            if (e.UserState is ButtonEventArgs)
+                OnButtonPressed((ButtonEventArgs)e.UserState);
+            else if (e.UserState is BounceEventArgs)
+                OnBounce((BounceEventArgs)e.UserState);
         }
 
         void bounceWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -78,9 +86,14 @@ namespace AlertSense.PingPong.Raspberry.IO
             {
                 while (!worker.CancellationPending)
                 {
-                    if (Settings.Driver.Read(Settings.LeftButtonPin))
-                        worker.ReportProgress(0, new BounceEventArgs ());
-                    Thread.Sleep(100);
+                    var buttonValue = Settings.Driver.Read(Settings.LeftButtonPin);
+
+                    if (lastButtonValue != buttonValue)
+                    {
+                        lastButtonValue = buttonValue;
+                        worker.ReportProgress(0, new ButtonEventArgs(buttonValue));
+                        Thread.Sleep(100);
+                    }
                 }
             }
             catch(Exception ex)
@@ -89,8 +102,8 @@ namespace AlertSense.PingPong.Raspberry.IO
             }
             finally
             {
-                Settings.Driver.Release(Settings.LeftBouncePin);
-                Console.WriteLine("Released pin {0}.", Settings.LeftBouncePin);
+                Settings.Driver.Release(Settings.LeftButtonPin);
+                Console.WriteLine("Released pin {0}.", Settings.LeftButtonPin);
             }
 
             if (worker.CancellationPending)

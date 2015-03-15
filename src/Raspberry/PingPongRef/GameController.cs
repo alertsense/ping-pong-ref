@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AlertSense.PingPongRef.Raspberry
+namespace AlertSense.PingPong.Raspberry
 {
     public class GameController
     {

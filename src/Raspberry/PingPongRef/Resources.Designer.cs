@@ -39,7 +39,7 @@ namespace AlertSense.PingPong.Raspberry {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AlertSense.PingPongRef.Raspberry.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AlertSense.PingPong.Raspberry.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace AlertSense.PingPong.Raspberry {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  _____ _               _____                    _____       __ 
+        ///   Looks up a localized string similar to   _____ _               _____                    _____       __ 
         /// |  __ (_)             |  __ \                  |  __ \     / _|
         /// | |__) | _ __   __ _  | |__) |__  _ __   __ _  | |__) |___| |_ 
         /// |  ___/ | &apos;_ \ / _` | |  ___/ _ \| &apos;_ \ / _` | |  _  // _ \  _|
@@ -77,7 +77,7 @@ namespace AlertSense.PingPong.Raspberry {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Press any key to terminate.
+        ///   Looks up a localized string similar to Press any key to terminate..
         /// </summary>
         internal static string Instructions {
             get {

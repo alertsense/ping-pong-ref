@@ -17,6 +17,7 @@ namespace AlertSense.PingPong.Raspberry
             using (var table = ConnectionFactory.GetTableConnection()) {
 
                 table.Bounce += table_Bounce;
+                table.ButtonPressed += table_ButtonPressed;
                 table.Open();
 
                 Console.WriteLine(Resources.Instructions);
@@ -24,13 +25,20 @@ namespace AlertSense.PingPong.Raspberry
             }
         }
 
-        static void table_Bounce(object sender, BounceEventArgs e)
+        static void table_ButtonPressed(object sender, ButtonEventArgs e)
         {
+            if (!e.Enabled) return;
+
             var table = (ITableConnection)sender;
             leftLedOn = !leftLedOn;
             table.Led(leftLedOn);
+            Console.WriteLine("ButtonPressed");
+        }
 
+        static void table_Bounce(object sender, BounceEventArgs e)
+        {
             Console.WriteLine("Bounce");
         }
+
     }
 }

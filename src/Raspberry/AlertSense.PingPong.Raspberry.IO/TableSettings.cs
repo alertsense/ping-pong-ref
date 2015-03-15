@@ -35,5 +35,13 @@ namespace AlertSense.PingPong.Raspberry.IO
                 };
             }
         }
+
+        public static TableSettings Left
+        {
+            get
+            {
+                return new TableSettings();
+            }
+        }
     }
 }
