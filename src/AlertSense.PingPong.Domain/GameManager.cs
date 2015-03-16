@@ -1,12 +1,11 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using AlertSense.PingPong.Common.Entities;
 using AlertSense.PingPong.Common.Interfaces;
 using AlertSense.PingPong.Domain.Factories;
-using AlertSense.PingPong.Common.Entities;
 using AlertSense.PingPong.ServiceModel.Enums;
 using AlertSense.PingPong.ServiceModel.Models;
 using ServiceStack;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using AlertSense.PingPong.Common.Extensions;
 
@@ -15,12 +14,19 @@ namespace AlertSense.PingPong.Domain
     public class GameManager : IGameManager
     {
         public IGameRepository GameRepository { get; set; }
+
         // Lazily instantiate a Game if one is not provided
         private GameModel _game;
         public GameModel Game
         {
             get { return _game ?? (_game = GameFactory.Create()); }
             set { _game = value; }
+        }
+
+        public GameModel CreateGame()
+        {
+            Game = GameFactory.Create();
+            return Game;
         }
 
 
@@ -32,10 +38,10 @@ namespace AlertSense.PingPong.Domain
         {
             var score = new ScoreModel
             {
-                SideOne = Game.Players[(int) Side.One].Score,
+                SideOne = Game.Players[(int)Side.One].Score,
                 SideTwo = Game.Players[(int)Side.Two].Score
             };
-          
+
             return score;
         }
 
@@ -71,14 +77,14 @@ namespace AlertSense.PingPong.Domain
                 // check for off the table bounce or receiver side bounce
                 if (bounce.Side != Game.Striker)
                 {
-                    // award point to the receiver  
+                    // award point to the receiver
                     Game.CurrentPoint.SideToAward = Game.NotStriker;
-                    AwardPoint(Game.CurrentPoint);                 
+                    AwardPoint(Game.CurrentPoint);
                 }
                 else
                 {
-                   // otherwise the ball bounced on the server side as expected and play continues
-                   Game.IsServe = false;
+                    // otherwise the ball bounced on the server side as expected and play continues
+                    Game.IsServe = false;
                 }
 
                 // striker does not change
@@ -86,7 +92,7 @@ namespace AlertSense.PingPong.Domain
             else  // Not the serve
             {
                 // Handle off the table bounce
-                if (bounce.Side == Side.None || bounce.Side == Game.Striker )
+                if (bounce.Side == Side.None || bounce.Side == Game.Striker)
                 {
                     // award point to the non-striker
                     Game.CurrentPoint.SideToAward = Game.NotStriker;
@@ -94,7 +100,7 @@ namespace AlertSense.PingPong.Domain
                 }
                 else //play continues
                 {
-                   Game.ChangeStriker();
+                    Game.ChangeStriker();
                 }
             }
             //if (GameRepository != null)
