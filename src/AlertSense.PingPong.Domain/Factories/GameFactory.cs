@@ -37,6 +37,8 @@ namespace AlertSense.PingPong.Domain.Factories
             game.Striker = game.InitialServer;
             game.IsServe = true;
             game.CurrentPoint = new PointModel {Bounces = new List<BounceModel>()};
+
+            game.CurrentServer = game.InitialServer;
             return game;
         }
 

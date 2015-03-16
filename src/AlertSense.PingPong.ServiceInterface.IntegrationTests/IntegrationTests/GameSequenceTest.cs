@@ -25,6 +25,7 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
 
 
         [Test]
+        [Ignore]
         public void GamePointSequenceTest()
         {
             var game = Client.Post(new CreateGameRequest { });
@@ -54,6 +55,7 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
         }
 
         [Test]
+        [Ignore]
         public void GameBounceSequenceTest()
         {
             var game = Client.Post(new CreateGameRequest { });

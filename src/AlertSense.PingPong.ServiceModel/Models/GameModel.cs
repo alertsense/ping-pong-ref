@@ -21,6 +21,9 @@ namespace AlertSense.PingPong.ServiceModel.Models
         public PointModel CurrentPoint { get; set; }
 
         public Side InitialServer { get; set; }
+        public Side CurrentServer { get; set; }
+
+
         public bool IsServe { get; set; }
         public GameState GameState { get; set; }
 

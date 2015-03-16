@@ -7,7 +7,6 @@ using AlertSense.PingPong.Common.Entities;
 using AlertSense.PingPong.ServiceModel.Enums;
 using AlertSense.PingPong.ServiceModel.Models;
 using ServiceStack;
-using AlertSense.PingPong.Common.Extensions;
 using System.Diagnostics;
 namespace AlertSense.PingPong.Domain
 {
@@ -16,13 +15,17 @@ namespace AlertSense.PingPong.Domain
         public IGameRepository GameRepository { get; set; }
         // Lazily instantiate a Game if one is not provided
         private GameModel _game;
-
         public GameModel Game
         {
             get { return _game ?? (_game = GameFactory.Create()); }
             set { _game = value; }
         }
 
+
+        /// <summary>
+        /// Return the game score
+        /// </summary>
+        /// <returns></returns>
         public ScoreModel GetScore()
         {
             var score = new ScoreModel
@@ -34,21 +37,28 @@ namespace AlertSense.PingPong.Domain
             return score;
         }
 
+
+        /// <summary>
+        /// Return list of game points
+        /// </summary>
+        /// <returns></returns>
         public IList<PointModel> GetPoints()
         {
             return Game.Points;
         }
 
+
+        /// <summary>
+        /// Process the bounce data delivered from Pi
+        /// </summary>
+        /// <param name="bounce"></param>
         public void ProcessBounce(BounceModel bounce)
         {
             if (bounce.Side != Side.None)
             {
                 Game.CurrentPoint.Bounces.Add(bounce);
             }
-
             Debug.WriteLine("Bounce on side {0}", bounce.Side);
-
-
             // Special case the serve
             if (Game.IsServe)
             {
@@ -57,8 +67,7 @@ namespace AlertSense.PingPong.Domain
                 {
                     // award point to the receiver  
                     Game.CurrentPoint.SideToAward = Game.NotStriker;
-                    AwardPoint(Game.CurrentPoint);
-                  
+                    AwardPoint(Game.CurrentPoint);                 
                 }
                 else
                 {
@@ -76,22 +85,18 @@ namespace AlertSense.PingPong.Domain
                     // award point to the non-striker
                     Game.CurrentPoint.SideToAward = Game.NotStriker;
                     AwardPoint(Game.CurrentPoint);
-
                 }
                 else //play continues
                 {
                    Game.ChangeStriker();
                 }
-
             }
-
             if (GameRepository != null)
                 GameRepository.SaveGame(Game.ConvertTo<Game>()); 
-
         }
 
         /// <summary>
-        /// Public method just for testing
+        /// Determine who servers next based upon game score and who served first in the game
         /// </summary>
         /// <returns></returns>
         public Side GetNextToServe()
@@ -122,9 +127,33 @@ namespace AlertSense.PingPong.Domain
             return server;
         }
 
+        public GameModel GetGameModel()
+        {
 
-       
+            return Game;
+        }
 
+        public void AwardPoint(PointModel point)
+        {
+            var playerAwarded = (int)point.SideToAward;
+            Game.Players[playerAwarded].Score++;
+            Game.Players[playerAwarded].History.Add(point);
+            Game.Points.Add(point);
+            if (!IsGameOver())
+            {
+                Game.CurrentServer = GetNextToServe();
+                Game.Striker = Game.CurrentServer;
+                // next bounce is a serve
+                Game.IsServe = true;
+                Game.CurrentPoint = new PointModel { Bounces = new List<BounceModel>() };
+            }
+
+        }
+
+        /// <summary>
+        /// Determine if end of game condtions are met.
+        /// </summary>
+        /// <returns></returns>
         private bool IsGameOver()
         {
             var playerOneScore = Game.Players[(int)Side.One].Score;
@@ -147,27 +176,6 @@ namespace AlertSense.PingPong.Domain
             return value % 2 > 0;
         }
 
-        public GameModel GetGameModel()
-        {
- 
-            return Game;
-        }
-
-        public void AwardPoint(PointModel point)
-        {
-            var playerAwarded = (int)point.SideToAward;
-            Game.Players[playerAwarded].Score++;
-            Game.Players[playerAwarded].History.Add(point);
-            Game.Points.Add(point);
-            if (! IsGameOver())
-            {
-                Game.Striker = GetNextToServe();
-            }
-
-            // next bounce is a server
-            Game.IsServe = true;
-            Game.CurrentPoint = new PointModel {Bounces = new List<BounceModel>()};
-
-        }
+       
     }
 }
