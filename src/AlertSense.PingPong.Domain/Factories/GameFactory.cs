@@ -1,14 +1,12 @@
-﻿using AlertSense.PingPong.Common.Entities;
-using AlertSense.PingPong.ServiceModel.Enums;
+﻿using AlertSense.PingPong.ServiceModel.Enums;
+using AlertSense.PingPong.ServiceModel.Models;
 using System;
 using System.Collections.Generic;
-using AlertSense.PingPong.ServiceModel.Models;
 
 namespace AlertSense.PingPong.Domain.Factories
 {
     public class GameFactory
     {
-
         /// <summary>
         /// Initial Game State Definition
         ///    Two Players are initialized
@@ -32,21 +30,21 @@ namespace AlertSense.PingPong.Domain.Factories
                         },
                 Points = new List<PointModel>(),
                 GameState = GameState.InProgress,
-               
             };
             game.Striker = game.InitialServer;
             game.IsServe = true;
-            game.CurrentPoint = new PointModel {Bounces = new List<BounceModel>()};
+            game.CurrentPoint = new PointModel { GameId = game.Id, Bounces = new List<BounceModel>() };
 
             game.CurrentServer = game.InitialServer;
             return game;
         }
 
+        private static readonly Random Coin = new Random();
+
         private static Side ChooseInitialServer()
         {
             var choice = Side.One;
-            var coin = new Random();
-            var toss = coin.Next(0, 1);
+            var toss = Coin.Next(int.MaxValue) % 2;
             if (toss == 1)
             {
                 choice = Side.Two;
