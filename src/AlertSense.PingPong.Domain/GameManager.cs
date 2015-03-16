@@ -8,6 +8,7 @@ using AlertSense.PingPong.ServiceModel.Enums;
 using AlertSense.PingPong.ServiceModel.Models;
 using ServiceStack;
 using AlertSense.PingPong.Common.Extensions;
+using System.Diagnostics;
 namespace AlertSense.PingPong.Domain
 {
     public class GameManager : IGameManager
@@ -44,6 +45,10 @@ namespace AlertSense.PingPong.Domain
             {
                 Game.CurrentPoint.Bounces.Add(bounce);
             }
+
+            Debug.WriteLine("Bounce on side {0}", bounce.Side);
+
+
             // Special case the serve
             if (Game.IsServe)
             {

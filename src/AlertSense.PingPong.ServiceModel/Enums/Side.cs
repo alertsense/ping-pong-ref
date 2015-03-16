@@ -7,8 +7,8 @@
     /// </summary>
     public enum Side
     {
-        One=0 ,
-        Two,
-        None
+        One=0,
+        Two=1,
+        None=2
     }
 }

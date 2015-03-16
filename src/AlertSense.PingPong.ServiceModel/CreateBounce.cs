@@ -9,7 +9,7 @@ namespace AlertSense.PingPong.ServiceModel
     public class CreateBounceRequest : IReturn<CreateBounceResponse>
     {
         public Guid GameId { get; set; }
-        public Side BounceSide { get; set; }
+        public Side Side { get; set; }
     }
 
     public class CreateBounceResponse : GameModel
