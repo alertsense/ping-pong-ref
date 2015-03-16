@@ -14,7 +14,6 @@ properties {
 
 	$raspberryHost = "192.168.1.15"
 	$raspberryUser = "pi"
-	$raspberryIdentityFile = "~/.ssh/id_rsa"
 	$raspberryDirectory = "/home/pi/mono/pingpongref"
 
     $rabbitMqApiUrl = "http://localhost:15672/api"
@@ -45,7 +44,8 @@ task Publish-Web -depends Compile {
 }
 
 task Publish-Raspberry -depends Compile {
-	scp -r -i ~/.ssh/id_rsa .\src\Raspberry\PingPongRef\bin\Debug pi@192.168.1.15:/home/pi/mono/pingpongref
+	$scpTarget = "{0}@{1}:{2}" -f $raspberryUser, $raspberryHost, $raspberryDirectory
+	scp -r -i ~/.ssh/id_rsa "../src/Raspberry/PingPongRef/bin/Debug" $scpTarget
 }
 
 task CommonAssemblyInfo {
