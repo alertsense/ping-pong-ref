@@ -36,6 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Make", "Make", "{613B6AA0-A
 	ProjectSection(SolutionItems) = preProject
 		..\make\default.ps1 = ..\make\default.ps1
 		..\make\make.ps1 = ..\make\make.ps1
+		..\make\psake-contrib.ps1 = ..\make\psake-contrib.ps1
 	EndProjectSection
 EndProject
 Global

@@ -12,30 +12,46 @@ properties {
     $baseDir = Resolve-Path ..\
     $srcDir = join-path $baseDir "\src"
 
+	$raspberryHost = "192.168.1.15"
+	$raspberryUser = "pi"
+	$raspberryIdentityFile = "~/.ssh/id_rsa"
+	$raspberryDirectory = "/home/pi/mono/pingpongref"
+
     $rabbitMqApiUrl = "http://localhost:15672/api"
 	$rabbitMqVirtualHost = "pingpong"
 	$rabbitMqUser = ""
 	$rabbitMqPassword = ""
 }
 
-task default -depends Init, Compile
+. ./psake-contrib.ps1
+
+task Default -depends Compile
+task Publish -depends Publish-Web, Publish-Raspberry
 
 task Init {
 
 }
 
-task Compile -depends Init {
-    msbuild /t:clean /v:q /nologo /p:"Configuration=$projectConfig;VisualStudioVersion=12.0" $srcDir\$projectName.sln
+task Compile -depends Init, CommonAssemblyInfo {
     msbuild /t:build /v:q /nologo /p:"Configuration=$projectConfig;VisualStudioVersion=12.0" $srcDir\$projectName.sln
+}
+
+task Clean {
+    msbuild /t:clean /v:q /nologo /p:"Configuration=$projectConfig;VisualStudioVersion=12.0" $srcDir\$projectName.sln
+}
+
+task Publish-Web -depends Compile {
+	Web-Deploy $srcDir\AlertSense.PingPong\AlertSense.PingPong.csproj $publishProfile $publishUserName $publishPassword
+}
+
+task Publish-Raspberry -depends Compile {
+	scp -r -i ~/.ssh/id_rsa .\src\Raspberry\PingPongRef\bin\Debug pi@192.168.1.15:/home/pi/mono/pingpongref
 }
 
 task CommonAssemblyInfo {
     create-commonAssemblyInfo "$projectVersion" $projectName "$srcDir\CommonAssemblyInfo.cs"
 }
 
-task Publish -depends Init, CommonAssemblyInfo, Compile {
-	publish-project $srcDir\AlertSense.Aspen\AlertSense.Aspen.csproj $publishProfile $publishUserName $publishPassword
-}
 
 task PrepareRabbitMq -depends Init {
 	$rabbitMqSecPass = ConvertTo-SecureString $rabbitMqPassword -AsPlainText -Force
@@ -57,42 +73,4 @@ task PrepareRabbitMq -depends Init {
 			Invoke-RestMethod -Method DELETE -Uri $GetSingleExchangeUri -Credential $rabbitMqCred | Format-Table -Property name, type
 		}
 	}
-}
-
-function global:publish-project($projectFile, $profile, $username, $password)
-{
-	Write-Host "Publishing: $projectFile" -ForeGroundColor GREEN
-	Write-Host "PublishProfile: $profile" -ForeGroundColor GREEN
-	msbuild $projectFile /v:q /nologo /p:DeployOnBuild=true /p:PublishProfile=$profile /p:VisualStudioVersion=12.0 /p:Password=$password /p:UserName=$username
-}
-
-function FixUri
-{
-	param([URI] $uri)
-
-	$pathAndQuery = $uri.PathAndQuery
-	$flagsField = $uri.GetType().GetField("m_Flags", [Reflection.BindingFlags]::NonPublic -bor [Reflection.BindingFlags]::Instance)
-	$flagsValue = [UInt64]$flagsField.GetValue($uri)
-	# remove flags Flags.PathNotCanonical and Flags.QueryNotCanonical
-	$flagsValue = [UInt64]($flagsValue -band (-bnot 0x30));
-	$flagsField.SetValue($uri, $flagsValue)
-}
-
-
-<#
-Updates the CommonAssemblyInfo.cs with the version and application name
-#>
-function global:create-commonAssemblyInfo($version,$applicationName,$filename)
-{
-"using System.Reflection;
-
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyCompany(""AlertSense, Inc."")]
-[assembly: AssemblyProduct(""$applicationName"")]
-[assembly: AssemblyCopyright(""Copyright © 2014"")]
-[assembly: AssemblyTrademark("""")]
-[assembly: AssemblyCulture("""")]
-[assembly: AssemblyVersion(""$version"")]"  | out-file $filename -encoding "UTF8"      
 }
