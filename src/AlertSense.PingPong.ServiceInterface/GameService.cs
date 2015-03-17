@@ -1,15 +1,11 @@
-﻿//#define GameFactoryManager
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ServiceStack;
-using AlertSense.PingPong.Common.Interfaces;
+﻿using AlertSense.PingPong.Common.Interfaces;
+using AlertSense.PingPong.Domain;
 using AlertSense.PingPong.ServiceModel;
 using AlertSense.PingPong.ServiceModel.Models;
-using AlertSense.PingPong.Common.Entities;
-using AlertSense.PingPong.Domain;
+using ServiceStack;
+
+//#define GameFactoryManager
+using System;
 
 namespace AlertSense.PingPong.ServiceInterface
 {
@@ -20,6 +16,8 @@ namespace AlertSense.PingPong.ServiceInterface
 #else
         public IGameManager GameManager { get; set; }
 #endif
+        public ISpectateManager SpectateManager { get; set; }
+
         public GameSummaryResponse Post(GetGameSummaryRequest request)
         {
             throw new NotImplementedException();
@@ -35,8 +33,9 @@ namespace AlertSense.PingPong.ServiceInterface
 #if GameFactoryManager
             var GameManager = GameManagerFactory.GetNewGameManager();
 #endif
-
-            return GameManager.GetGameModel().ConvertTo<CreateGameResponse>();
+            var gameModel = GameManager.CreateGame();
+            SpectateManager.Update(gameModel);
+            return gameModel.ConvertTo<CreateGameResponse>();
         }
 
         public ResetGameResponse Post(ResetGameRequest request)
@@ -51,8 +50,10 @@ namespace AlertSense.PingPong.ServiceInterface
 #endif
 
             GameManager.AwardPoint(new PointModel { GameId = request.GameId, SideToAward = request.ScoringSide });
+            var gameModel = GameManager.GetGameModel();
+            SpectateManager.Update(gameModel);
 
-            return GameManager.GetGameModel().ConvertTo<CreatePointResponse>();
+            return gameModel.ConvertTo<CreatePointResponse>();
         }
 
         /// <summary>

@@ -29,7 +29,6 @@ namespace AlertSense.PingPong.Domain
             return Game;
         }
 
-
         /// <summary>
         /// Return the game score
         /// </summary>
