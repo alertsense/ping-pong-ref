@@ -8,6 +8,8 @@ using AlertSense.PingPong.ServiceModel.Enums;
 using AlertSense.PingPong.ServiceModel.Models;
 using ServiceStack;
 using System.Diagnostics;
+using AlertSense.PingPong.Common.Extensions;
+
 namespace AlertSense.PingPong.Domain
 {
     public class GameManager : IGameManager
@@ -54,6 +56,10 @@ namespace AlertSense.PingPong.Domain
         /// <param name="bounce"></param>
         public void ProcessBounce(BounceModel bounce)
         {
+            // don't process anymore bounces after the game is considered complete
+            if (Game.GameState == GameState.Complete)
+                return;
+
             if (bounce.Side != Side.None)
             {
                 Game.CurrentPoint.Bounces.Add(bounce);
@@ -91,8 +97,8 @@ namespace AlertSense.PingPong.Domain
                    Game.ChangeStriker();
                 }
             }
-            if (GameRepository != null)
-                GameRepository.SaveGame(Game.ConvertTo<Game>()); 
+            //if (GameRepository != null)
+            //    GameRepository.SaveGame(Game.ToGameEntity()); 
         }
 
         /// <summary>
@@ -129,6 +135,8 @@ namespace AlertSense.PingPong.Domain
 
         public GameModel GetGameModel()
         {
+            if (GameRepository != null)
+                GameRepository.SaveGame(Game.ToGameEntity());
 
             return Game;
         }

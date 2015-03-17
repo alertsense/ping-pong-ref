@@ -76,6 +76,13 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests
             SetupAppHost();
         }
 
+        [TearDown]
+        protected void Cleanup()
+        {
+            AppHost.Stop();
+            AppHost.Dispose();
+        }
+
         private void SetupAppHost()
         {
             AppHost = new IntegrationAppHost();

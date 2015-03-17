@@ -11,25 +11,19 @@ namespace AlertSense.PingPong.Common.Entities
     {
         public Game()
         {
-            Players = new List<PlayerModel>();
-            Points = new List<PointModel>();
-            Bounces = new List<BounceModel>();
+            Players = new List<Player>();
+            Points = new List<Point>();
         }
 
         public Guid Id { get; set; }
 
         [Reference]
-        public List<PlayerModel> Players { get; set; }
+        public List<Player> Players { get; set; }
 
         [Reference]
-        public List<PointModel> Points { get; set; }
-
-        [Reference]
-        public List<BounceModel> Bounces { get; set; }
-
-        public Side InitialServer { get; set; }
-
-       
+        public List<Point> Points { get; set; }
+        
+        public Side InitialServer { get; set; }       
 
         public GameState GameState { get; set; }
     }

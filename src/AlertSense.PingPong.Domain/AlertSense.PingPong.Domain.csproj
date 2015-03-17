@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Factories\GameFactory.cs" />
+    <Compile Include="Factories\GameManagerFactory.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

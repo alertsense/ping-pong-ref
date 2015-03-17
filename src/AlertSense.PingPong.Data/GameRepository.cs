@@ -33,9 +33,18 @@ namespace AlertSense.PingPong.Data
             return DbConnection.SingleById<Game>(id);
         }
 
+        public Game GetGameById(Guid id, bool IncludeReferences = true)
+        {
+            return DbConnection.SingleById<Game>(id);
+        }
+
         public Game SaveGame(Game game)
         {
-            DbConnection.Save<Game>(game, references: false);
+            DbConnection.Save<Game>(game, references: true);
+
+            foreach(var point in game.Points)
+                DbConnection.Save<Point>(point, references: true);
+
             return game;
         }
 
@@ -64,10 +73,5 @@ namespace AlertSense.PingPong.Data
             throw new NotImplementedException();
         }
 
-
-        public Game GetGameById(Guid id, bool IncludeReferences = true)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

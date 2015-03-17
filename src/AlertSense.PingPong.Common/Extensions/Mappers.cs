@@ -10,11 +10,41 @@ namespace AlertSense.PingPong.Common.Extensions
         {
             var model = game.ConvertTo<GameModel>();
 
-            model.Players = game.Players.ConvertAll<PlayerModel>(u => u.ConvertTo<PlayerModel>());
-            model.Points = game.Players.ConvertAll<PointModel>(u => u.ConvertTo<PointModel>());
+            model.Players = game.Players.ConvertAll(u => u.ConvertTo<PlayerModel>());
+            model.Points = game.Points.ConvertAll(u => u.ToPointModel());
           //  model.Bounces = game.Players.ConvertAll<BounceModel>(u => u.ConvertTo<BounceModel>());
 
             return model;
         }
+
+        public static Game ToGameEntity(this GameModel gameModel)
+        {
+            var game = gameModel.ConvertTo<Game>();
+
+            game.Players = gameModel.Players.ConvertAll(u => u.ConvertTo<Player>());
+            game.Points = gameModel.Points.ConvertAll(u => u.ToPoint());
+
+
+            //  model.Bounces = game.Players.ConvertAll<BounceModel>(u => u.ConvertTo<BounceModel>());
+
+            return game;
+        }
+
+        public static Point ToPoint(this PointModel pointModel)
+        {
+            var point = pointModel.ConvertTo<Point>();
+
+            point.Bounces = pointModel.Bounces.ConvertAll(u => u.ConvertTo<Bounce>());
+            return point;
+        }
+
+        public static PointModel ToPointModel(this Point point)
+        {
+            var pointModel = point.ConvertTo<PointModel>();
+
+            pointModel.Bounces = point.Bounces.ConvertAll(u => u.ConvertTo<BounceModel>());
+            return pointModel;
+        }
+
     }
 }

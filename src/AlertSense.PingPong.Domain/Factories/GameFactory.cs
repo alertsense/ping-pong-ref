@@ -27,8 +27,8 @@ namespace AlertSense.PingPong.Domain.Factories
                 InitialServer = ChooseInitialServer(),
                 Players = new List<PlayerModel>
                         {
-                            new PlayerModel { Name = "Player One", Score = 0, History = new List<PointModel>() },
-                            new PlayerModel { Name = "Player Two", Score = 0, History = new List<PointModel>() }
+                            new PlayerModel { Id = Guid.NewGuid(), Name = "Player One", Score = 0, History = new List<PointModel>() },
+                            new PlayerModel { Id = Guid.NewGuid(), Name = "Player Two", Score = 0, History = new List<PointModel>() }
                         },
                 Points = new List<PointModel>(),
                 GameState = GameState.InProgress,

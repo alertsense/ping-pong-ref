@@ -12,10 +12,10 @@ namespace AlertSense.PingPong.Common.Entities
         [References(typeof(Game))]
         public Guid GameId { get; set; }
 
-        [References(typeof(Player))]
-        public Guid PlayerId { get; set; }
+        [References(typeof(Point))]
+        public Guid PointId { get; set; }
 
-        public Side SideBounced { get; set; }
+        public Side Side { get; set; }
 
         public ulong Ticks { get; set; }
     }

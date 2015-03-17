@@ -2,6 +2,7 @@
 using AlertSense.PingPong.Common.Interfaces;
 using AlertSense.PingPong.Data;
 using AlertSense.PingPong.Domain;
+using AlertSense.PingPong.Domain.Factories;
 using ServiceStack;
 using ServiceStack.Data;
 using ServiceStack.OrmLite;
@@ -32,6 +33,7 @@ namespace AlertSense.PingPong.ServiceInterface
             // register our dependencies for the service
             container.RegisterAs<GameRepository, IGameRepository>();
             container.RegisterAs<GameManager, IGameManager>();
+            container.RegisterAs<GameManagerFactory, IGameManagerFactory>();
 
             // register our service with our app host
             appHost.RegisterService<GameService>();
