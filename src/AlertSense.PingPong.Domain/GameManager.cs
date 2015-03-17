@@ -1,13 +1,11 @@
-﻿using AlertSense.PingPong.Common.Entities;
+﻿using AlertSense.PingPong.Common.Extensions;
 using AlertSense.PingPong.Common.Interfaces;
 using AlertSense.PingPong.Domain.Factories;
 using AlertSense.PingPong.ServiceModel.Enums;
 using AlertSense.PingPong.ServiceModel.Models;
-using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using AlertSense.PingPong.Common.Extensions;
 
 namespace AlertSense.PingPong.Domain
 {
@@ -17,13 +15,14 @@ namespace AlertSense.PingPong.Domain
 
         // Lazily instantiate a Game if one is not provided
         private GameModel _game;
+
         public GameModel Game
         {
-            get {
-
+            get
+            {
                 if (_game == null)
                     _game = GameFactory.Create();
-                return _game; 
+                return _game;
             }
             set { _game = value; }
         }
@@ -49,7 +48,6 @@ namespace AlertSense.PingPong.Domain
             return score;
         }
 
-
         /// <summary>
         /// Return list of game points
         /// </summary>
@@ -58,7 +56,6 @@ namespace AlertSense.PingPong.Domain
         {
             return Game.Points;
         }
-
 
         /// <summary>
         /// Process the bounce data delivered from Pi
@@ -73,7 +70,6 @@ namespace AlertSense.PingPong.Domain
             Debug.WriteLine("Bounce, GameId: {0}", Game.Id);
 
             bounce.Ticks = DateTime.UtcNow.Ticks;
-
 
             if (bounce.Side != Side.None)
             {
@@ -109,11 +105,11 @@ namespace AlertSense.PingPong.Domain
                 }
                 else //play continues
                 {
-                    Game.ChangeStriker();
+                    Game.Striker = Game.Striker == Side.One ? Side.Two : Side.One;
                 }
             }
             //if (GameRepository != null)
-            //    GameRepository.SaveGame(Game.ToGameEntity()); 
+            //    GameRepository.SaveGame(Game.ToGameEntity());
         }
 
         /// <summary>
@@ -175,15 +171,23 @@ namespace AlertSense.PingPong.Domain
                 Game.Striker = Game.CurrentServer;
                 // next bounce is a serve
                 Game.IsServe = true;
-                Game.CurrentPoint = new PointModel();
+                Game.CurrentPoint = new PointModel { GameId = Game.Id };
             }
-
-
         }
 
+        /// <summary>
+        /// Remove last awarded point and adjust corresponding player's score
+        /// </summary>
         public void RemoveLastPoint()
         {
-            Game.RemoveLastPoint();
+            if (Game.Points.Count > 0)
+            {
+                var lastPoint = Game.Points[Game.Points.Count - 1];
+                Game.Points.RemoveAt(Game.Points.Count - 1);
+
+                //Adjust score to account for point removal
+                Game.Players[(int)lastPoint.SideToAward].Score--;
+            }
         }
 
         /// <summary>
@@ -211,7 +215,5 @@ namespace AlertSense.PingPong.Domain
         {
             return value % 2 > 0;
         }
-
-       
     }
 }
