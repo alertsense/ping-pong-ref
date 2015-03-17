@@ -25,13 +25,14 @@ namespace AlertSense.PingPong.Raspberry.IO
             get
             {
                 return new TableSettings 
-                { 
-                    LeftBouncePin = ProcessorPin.Pin6, 
-                    RightBouncePin = ProcessorPin.Pin12,
-                    LeftLedPin = ProcessorPin.Pin22,
-                    RightLedPin = ProcessorPin.Pin23,
+                {
                     LeftButtonPin = ProcessorPin.Pin17,
-                    RightButtonPin = ProcessorPin.Pin18
+                    LeftBouncePin = ProcessorPin.Pin6,
+                    LeftLedPin = ProcessorPin.Pin22,
+
+                    RightButtonPin = ProcessorPin.Pin18,
+                    RightBouncePin = ProcessorPin.Pin12,
+                    RightLedPin = ProcessorPin.Pin23,
                 };
             }
         }

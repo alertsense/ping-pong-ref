@@ -41,13 +41,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Make", "Make", "{613B6AA0-A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPong.ServiceInterface.IntegrationTests", "AlertSense.PingPong.ServiceInterface.IntegrationTests\AlertSense.PingPong.ServiceInterface.IntegrationTests.csproj", "{F31E6D06-D189-45B0-8713-DE5071015811}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Make", "Make", "{613B6AA0-A1CC-4AE1-98A7-18FAFCC42A01}"
-	ProjectSection(SolutionItems) = preProject
-		..\make\default.ps1 = ..\make\default.ps1
-		..\make\make.ps1 = ..\make\make.ps1
-		..\make\psake-contrib.ps1 = ..\make\psake-contrib.ps1
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

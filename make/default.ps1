@@ -5,21 +5,21 @@ properties {
     $projectConfig = "Debug"
     $projectVersion = "1.0.0"
 
-	$publishProfile = "Local"
-	$publishUserName = ""
-	$publishPassword = ""
+    $publishProfile = "Local"
+    $publishUserName = ""
+    $publishPassword = ""
 
     $baseDir = Resolve-Path ..\
     $srcDir = join-path $baseDir "\src"
 
-	$raspberryHost = "192.168.1.15"
-	$raspberryUser = "pi"
-	$raspberryDirectory = "/home/pi/mono/pingpongref"
+    $raspberryHost = "192.168.0.75"
+    $raspberryUser = "pi"
+    $raspberryDirectory = "/home/pi/mono/pingpongref"
 
     $rabbitMqApiUrl = "http://localhost:15672/api"
-	$rabbitMqVirtualHost = "pingpong"
-	$rabbitMqUser = ""
-	$rabbitMqPassword = ""
+    $rabbitMqVirtualHost = "pingpong"
+    $rabbitMqUser = ""
+    $rabbitMqPassword = ""
 }
 
 . ./psake-contrib.ps1

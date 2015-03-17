@@ -20,4 +20,4 @@ $props.rabbitMqPassword = "staging"
 
 $buildFile = join-path $scriptPath "default.ps1" -Resolve
 
-invoke-psake -framework '4.0' -properties $props -taskList Compile, Publish-Raspberry -buildFile $buildFile
+invoke-psake -framework '4.0' -properties $props -taskList Publish-Raspberry -buildFile $buildFile

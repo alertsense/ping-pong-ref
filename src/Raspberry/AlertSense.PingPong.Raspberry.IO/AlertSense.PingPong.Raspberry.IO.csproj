@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConnectionFactory.cs" />
+    <Compile Include="ITableConnection.cs" />
+    <Compile Include="TableConnectionRaw.cs" />
     <Compile Include="TableConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TableSettings.cs" />
