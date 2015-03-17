@@ -12,7 +12,7 @@ properties {
     $baseDir = Resolve-Path ..\
     $srcDir = join-path $baseDir "\src"
 
-    $raspberryHost = "192.168.0.75"
+    $raspberryHost = "pingpong.pi"
     $raspberryUser = "pi"
     $raspberryDirectory = "/home/pi/mono/pingpongref"
 
@@ -45,7 +45,7 @@ task Publish-Web -depends Compile {
 
 task Publish-Raspberry -depends Compile {
 	$scpTarget = "{0}@{1}:{2}" -f $raspberryUser, $raspberryHost, $raspberryDirectory
-	scp -r -i ~/.ssh/id_rsa "../src/Raspberry/PingPongRef/bin/Debug" $scpTarget
+	scp -r -i ~/.ssh/id_rsa "../src/Raspberry/PingPongRef/bin/Debug/*" $scpTarget
 }
 
 task CommonAssemblyInfo {

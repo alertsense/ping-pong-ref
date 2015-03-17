@@ -1,9 +1,5 @@
 ﻿using AlertSense.PingPong.Raspberry.IO;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AlertSense.PingPong.Raspberry
 {
@@ -13,8 +9,7 @@ namespace AlertSense.PingPong.Raspberry
         private ITableConnection _table1;
         private ITableConnection _table2;
 
-        private long _buttonDownOn;
-        private bool _buttonDown;
+        private DateTime? _buttonDownOn;
 
         public void Start()
         {
@@ -28,30 +23,31 @@ namespace AlertSense.PingPong.Raspberry
         void Table_ButtonPressed(object sender, ButtonEventArgs e)
         {
             var table = (ITableConnection)sender;
-            Console.WriteLine("_buttonDownOn: {0}, Now: {1}", _buttonDownOn, DateTime.Now.Ticks);
-            var elapsedSpan = new TimeSpan(DateTime.Now.Ticks - _buttonDownOn);
-            if (!e.Enabled) 
+            Console.WriteLine("ButtonStateChanged: {0}, Now: {1}", e.Enabled, DateTime.Now);
+            
+            if (!e.Enabled && _buttonDownOn.HasValue) 
             {
-                if (_buttonDown && elapsedSpan.Milliseconds < 200)
+                var elapsed = DateTime.Now.Subtract(_buttonDownOn.Value).TotalMilliseconds;
+
+                if (elapsed < 200)
                 {
                     // Single button press
                     _t1LedOn = !_t1LedOn;
                     _table1.Led(_t1LedOn);
+                    Console.WriteLine("{0}_Button pressed once", table.Name);
                 } 
-                else
+                else if (elapsed > 2000)
                 {
+                    // Held down for more than 2 seconds
+                    Console.WriteLine("{0}_Button held down", table.Name);
                 }
-                Console.WriteLine("{0}_Button pressed and released in {1} milliseconds", table.Name, elapsedSpan.Milliseconds);
-                _buttonDown = false;
+                Console.WriteLine("{0}_Button pressed and released in {1} milliseconds", table.Name, elapsed);
+                _buttonDownOn = null;
                 return;
-            }
-
-            if (!_buttonDown)
-            {
-                _buttonDownOn = DateTime.Now.Ticks;
-                _buttonDown = true;
-                Console.WriteLine("{0}_Button Down On: {1}", table.Name, _buttonDownOn);
-            }
+            } 
+            
+            _buttonDownOn = DateTime.Now;
+            Console.WriteLine("{0}_Button Down On: {1}", table.Name, _buttonDownOn);
         }
 
         void Table_Bounce(object sender, BounceEventArgs e)

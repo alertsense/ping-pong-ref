@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using Raspberry.IO.GeneralPurpose;
-using System.ComponentModel;
 
 namespace AlertSense.PingPong.Raspberry.IO
 {
