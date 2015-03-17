@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ServiceStack.OrmLite;
 using ServiceStack.Data;
+using System.Diagnostics;
 
 namespace AlertSense.PingPong.Data
 {
@@ -30,19 +31,27 @@ namespace AlertSense.PingPong.Data
 
         public Game GetGameById(Guid id)
         {
-            return DbConnection.SingleById<Game>(id);
+            var game = DbConnection.SingleById<Game>(id);
+            return game;
         }
 
         public Game GetGameById(Guid id, bool IncludeReferences = true)
         {
-            return DbConnection.SingleById<Game>(id);
+            var game = DbConnection.LoadSingleById<Game>(id);
+            return game;
         }
 
         public Game SaveGame(Game game)
         {
-            DbConnection.Save<Game>(game, references: true);
+            Debug.WriteLine("Saving game with Id: {0}", game.Id);
 
-            foreach(var point in game.Points)
+            DbConnection.Save<Game>(game, references: true);
+            DbConnection.Save<Point>(game.CurrentPoint, references: true);
+
+            foreach (var player in game.Players)
+                DbConnection.Save<Player>(player, references: true);
+
+            foreach (var point in game.Points)
                 DbConnection.Save<Point>(point, references: true);
 
             return game;

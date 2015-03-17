@@ -25,9 +25,12 @@ namespace AlertSense.PingPong.ServiceInterface
             throw new NotImplementedException();
         }
 
-        public GameResponse Post(GetGameRequest request)
+        public GameResponse Get(GetGameRequest request)
         {
-            throw new NotImplementedException();
+#if GameFactoryManager
+            var GameManager = GameManagerFactory.GetGameManagerByGameId(request.GameId);
+#endif
+            return GameManager.GetGameModel().ConvertTo<GameResponse>();
         }
 
         public CreateGameResponse Post(CreateGameRequest request)

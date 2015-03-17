@@ -12,7 +12,7 @@ namespace AlertSense.PingPong.Common.Entities
         public Game()
         {
             Players = new List<Player>();
-            Points = new List<Point>();
+            Points = new List<Point>();            
         }
 
         public Guid Id { get; set; }
@@ -22,9 +22,19 @@ namespace AlertSense.PingPong.Common.Entities
 
         [Reference]
         public List<Point> Points { get; set; }
-        
-        public Side InitialServer { get; set; }       
 
+        [References(typeof(Point))]
+        public Guid CurrentPointId { get; set; }
+
+        [Reference]
+        public Point CurrentPoint { get; set; }      
+
+
+        public Side InitialServer { get; set; }
+        public Side CurrentServer { get; set; }
+
+        public bool IsServe { get; set; }
         public GameState GameState { get; set; }
+        public Side Striker { get; set; }
     }
 }

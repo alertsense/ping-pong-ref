@@ -9,9 +9,10 @@ namespace AlertSense.PingPong.ServiceModel.Models
         public PointModel()
         {
             Id = Guid.NewGuid();
+            Bounces = new List<BounceModel>();
         }
         public Guid Id { get; set; }
-
+        public Guid PlayerId { get; set; }
         public Guid GameId { get; set; }
         public Side SideToAward { get; set; }
         public ulong Ticks { get; set; }

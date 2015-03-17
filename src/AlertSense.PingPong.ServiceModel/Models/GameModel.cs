@@ -17,7 +17,13 @@ namespace AlertSense.PingPong.ServiceModel.Models
         public List<PlayerModel> Players { get; set; }
         public List<PointModel> Points { get; set; }
 
-        public PointModel CurrentPoint { get; set; }
+        private PointModel currentPoint;
+
+        public PointModel CurrentPoint
+        {
+            get { return currentPoint; }
+            set { currentPoint = value; }
+        }
 
         public Side InitialServer { get; set; }
         public Side CurrentServer { get; set; }

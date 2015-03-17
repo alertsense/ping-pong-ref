@@ -55,6 +55,31 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
         }
 
         [Test]
+        public void CreateNewGame()
+        {
+            var game = Client.Post(new CreateGameRequest { });
+            Assert.That(game, Is.Not.Null);
+            Debug.WriteLine("New GameId: {0}", game.Id);
+
+        }
+
+        [Test]
+        public  void CreateNewGameAndBounce()
+        {
+            var newGame = Client.Post(new CreateGameRequest { });
+
+            var game = Client.Get(new GetGameRequest { GameId = newGame.Id });
+            Assert.That(game, Is.Not.Null);
+            Debug.WriteLine("Existing GameId: {0}", game.Id);
+
+            GameModel gameState = game as GameModel;
+            gameState = BounceBall(gameState, 4);
+
+            Assert.That(gameState.Players.Count, Is.EqualTo(2));
+            Assert.That(gameState.Players[(int)newGame.InitialServer].Score, Is.EqualTo(1));
+        }
+
+        [Test]
         //[Ignore]
         public void GameBounceSequenceTest()
         {
@@ -64,6 +89,8 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
             Assert.That(game.GameState, Is.EqualTo(GameState.InProgress));
 
             GameModel gameState = game as GameModel;
+
+            int serverPlayerIndex = (int)game.InitialServer;
 
             // player 1 score
             gameState = BounceBall(gameState, 4);
@@ -99,7 +126,7 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
 
             // make sure the score we intend to get is correct
             Assert.That(gameState, Is.Not.Null);
-            Assert.That(gameState.Players[0].Score, Is.EqualTo(11));
+            Assert.That(gameState.Players[serverPlayerIndex].Score, Is.EqualTo(11));
 
             // player 2 score
             gameState = BounceBall(gameState, 3);
@@ -107,7 +134,7 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
             gameState = BounceBall(gameState, 4);
             // 11 - 4
             // verify that we can't go over a winning score
-            Assert.That(gameState.Players[0].Score, Is.EqualTo(11));
+            Assert.That(gameState.Players[serverPlayerIndex].Score, Is.EqualTo(11));
             Assert.That(gameState, Is.Not.Null);
             Assert.That(gameState.GameState, Is.EqualTo(GameState.Complete));
 

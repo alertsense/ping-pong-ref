@@ -3,6 +3,7 @@ using AlertSense.PingPong.ServiceModel.Enums;
 using System;
 using System.Collections.Generic;
 using AlertSense.PingPong.ServiceModel.Models;
+using System.Diagnostics;
 
 namespace AlertSense.PingPong.Domain.Factories
 {
@@ -21,6 +22,7 @@ namespace AlertSense.PingPong.Domain.Factories
         /// <returns></returns>
         public static GameModel Create()
         {
+
             var game = new GameModel
             {
                 Id = Guid.NewGuid(),
@@ -39,6 +41,7 @@ namespace AlertSense.PingPong.Domain.Factories
             game.CurrentPoint = new PointModel {Bounces = new List<BounceModel>()};
 
             game.CurrentServer = game.InitialServer;
+            Debug.WriteLine("Creating new game model with Id: {0}", game.Id);
             return game;
         }
 

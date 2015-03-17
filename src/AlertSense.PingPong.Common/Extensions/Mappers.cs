@@ -12,7 +12,8 @@ namespace AlertSense.PingPong.Common.Extensions
 
             model.Players = game.Players.ConvertAll(u => u.ConvertTo<PlayerModel>());
             model.Points = game.Points.ConvertAll(u => u.ToPointModel());
-          //  model.Bounces = game.Players.ConvertAll<BounceModel>(u => u.ConvertTo<BounceModel>());
+            model.CurrentPoint = game.CurrentPoint.ToPointModel();
+            //  model.Bounces = game.Players.ConvertAll<BounceModel>(u => u.ConvertTo<BounceModel>());
 
             return model;
         }
@@ -23,8 +24,7 @@ namespace AlertSense.PingPong.Common.Extensions
 
             game.Players = gameModel.Players.ConvertAll(u => u.ConvertTo<Player>());
             game.Points = gameModel.Points.ConvertAll(u => u.ToPoint());
-
-
+            game.CurrentPoint = gameModel.CurrentPoint.ToPoint();
             //  model.Bounces = game.Players.ConvertAll<BounceModel>(u => u.ConvertTo<BounceModel>());
 
             return game;

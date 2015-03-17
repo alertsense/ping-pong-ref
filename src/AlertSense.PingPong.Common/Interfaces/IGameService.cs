@@ -8,7 +8,7 @@ namespace AlertSense.PingPong.Common.Interfaces
         GameSummaryResponse Post(GetGameSummaryRequest request);
 
         // /Games/{Id}
-        GameResponse Post(GetGameRequest request);
+        GameResponse Get(GetGameRequest request);
 
         // /Games/
         CreateGameResponse Post(CreateGameRequest request);

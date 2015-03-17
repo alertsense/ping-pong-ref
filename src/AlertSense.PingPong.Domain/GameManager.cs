@@ -19,7 +19,12 @@ namespace AlertSense.PingPong.Domain
         private GameModel _game;
         public GameModel Game
         {
-            get { return _game ?? (_game = GameFactory.Create()); }
+            get {
+
+                if (_game == null)
+                    _game = GameFactory.Create();
+                return _game; 
+            }
             set { _game = value; }
         }
 
@@ -59,6 +64,11 @@ namespace AlertSense.PingPong.Domain
             // don't process anymore bounces after the game is considered complete
             if (Game.GameState == GameState.Complete)
                 return;
+
+            Debug.WriteLine("Bounce, GameId: {0}", Game.Id);
+
+            bounce.Ticks = (ulong)DateTime.Now.Ticks;
+
 
             if (bounce.Side != Side.None)
             {
@@ -143,9 +153,16 @@ namespace AlertSense.PingPong.Domain
 
         public void AwardPoint(PointModel point)
         {
+            point.Ticks = (ulong)DateTime.Now.Ticks;
+
             var playerAwarded = (int)point.SideToAward;
-            Game.Players[playerAwarded].Score++;
-            Game.Players[playerAwarded].History.Add(point);
+
+            var player = Game.Players[playerAwarded];
+
+            player.Score++;
+            player.History.Add(point);
+            point.PlayerId = player.Id;
+
             Game.Points.Add(point);
             if (!IsGameOver())
             {
@@ -153,8 +170,9 @@ namespace AlertSense.PingPong.Domain
                 Game.Striker = Game.CurrentServer;
                 // next bounce is a serve
                 Game.IsServe = true;
-                Game.CurrentPoint = new PointModel { Bounces = new List<BounceModel>() };
+                Game.CurrentPoint = new PointModel();
             }
+
 
         }
 

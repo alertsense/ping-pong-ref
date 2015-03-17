@@ -1,4 +1,5 @@
-﻿using AlertSense.PingPong.Common.Interfaces;
+﻿using AlertSense.PingPong.Common.Extensions;
+using AlertSense.PingPong.Common.Interfaces;
 using AlertSense.PingPong.ServiceModel.Models;
 using ServiceStack;
 using System;
@@ -13,7 +14,7 @@ namespace AlertSense.PingPong.Domain.Factories
         public IGameRepository GameRepository { get; set; }
         public IGameManager GetGameManagerByGameId(Guid gameId)
         {
-            var game = GameRepository.GetGameById(gameId).ConvertTo<GameModel>();
+            var game = GameRepository.GetGameById(gameId, IncludeReferences: true).ToGameModel();
             var gameManager = new GameManager
             {
                 Game = game,
