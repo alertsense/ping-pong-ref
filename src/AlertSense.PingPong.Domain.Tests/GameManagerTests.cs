@@ -141,5 +141,54 @@ namespace AlertSense.PingPong.Domain.Tests
 
             Assert.AreEqual(manager.Game.GameState, GameState.InProgress);
         }
+
+        [Test]
+        public void VerifyRemoveLastPointAfterAwardingPointTest()
+        {
+            var manager = new GameManager();
+            //award point to side one
+            manager.AwardPoint(new PointModel { SideToAward = Side.One });
+
+            var score = manager.GetScore();
+            Assert.IsTrue(score.SideOne == 1);
+            Assert.IsTrue(score.SideTwo == 0);
+
+            manager.RemoveLastPoint();
+            score = manager.GetScore();
+            Assert.IsTrue(score.SideOne == 0);
+        }
+
+        [Test]
+        public void VerifyRemoveLastPointBeforeScoring()
+        {
+            var manager = new GameManager();
+            var score = manager.GetScore();
+            Assert.IsTrue(score.SideOne == 0);
+            Assert.IsTrue(score.SideTwo == 0);
+            manager.RemoveLastPoint();
+            score = manager.GetScore();
+            Assert.IsTrue(score.SideOne == 0);
+            Assert.IsTrue(score.SideTwo == 0);
+
+        }
+
+        [Test]
+        public void VerifyRemovalOfCorrectPoint()
+        {
+            var manager = new GameManager();
+            var score = manager.GetScore();
+            Assert.IsTrue(score.SideOne == 0);
+            Assert.IsTrue(score.SideTwo == 0);
+
+            manager.AwardPoint(new PointModel { SideToAward = Side.One });
+            manager.AwardPoint(new PointModel { SideToAward = Side.Two });
+            manager.AwardPoint(new PointModel { SideToAward = Side.Two });
+
+            manager.RemoveLastPoint();
+            score = manager.GetScore();
+            Assert.IsTrue(score.SideOne == 1);
+            Assert.IsTrue(score.SideTwo == 1);
+
+        }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using AlertSense.PingPong.ServiceModel.Enums;
 
 namespace AlertSense.PingPong.ServiceModel.Models
@@ -37,9 +36,29 @@ namespace AlertSense.PingPong.ServiceModel.Models
             }
         }
 
+
+        /// <summary>
+        /// Desigante the next player to hit the ball which then specifies a valid bounce.
+        /// </summary>
         public void ChangeStriker()
         {
             Striker = Striker == Side.One ? Side.Two : Side.One;
+        }
+
+
+        /// <summary>
+        /// Remove last awarded point and adjsut corresponding player's score
+        /// </summary>
+        public void RemoveLastPoint()
+        {
+            if (Points.Count > 0)
+            {
+                var lastPoint = Points[Points.Count - 1];
+                Points.RemoveAt(Points.Count - 1);
+
+                //Adjust score to account for point removal
+                Players[(int)lastPoint.SideToAward].Score--;  
+            }
         }
     }
 }

@@ -44,9 +44,17 @@ namespace AlertSense.PingPong.ServiceInterface
             return GameManager.GetGameModel().ConvertTo<CreatePointResponse>();
         }
 
+        /// <summary>
+        /// Remove last point that was awarded.
+        /// Do nothing if no points have been awarded.
+        /// Adjust player score impacted by point removal.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public RemoveLastPointResponse Delete(RemoveLastPointRequest request)
         {
-            throw new NotImplementedException();
+            GameManager.RemoveLastPoint();
+           return GameManager.GetGameModel().ConvertTo<RemoveLastPointResponse>();
         }
 
         public CreateBounceResponse Post(CreateBounceRequest request)

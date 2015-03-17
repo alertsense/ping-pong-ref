@@ -150,8 +150,13 @@ namespace AlertSense.PingPong.Domain
 
         }
 
+        public void RemoveLastPoint()
+        {
+            Game.RemoveLastPoint();
+        }
+
         /// <summary>
-        /// Determine if end of game condtions are met.
+        /// Determine if end of game conditions are met.
         /// </summary>
         /// <returns></returns>
         private bool IsGameOver()
