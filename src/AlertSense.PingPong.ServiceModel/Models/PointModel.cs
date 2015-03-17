@@ -8,13 +8,16 @@ namespace AlertSense.PingPong.ServiceModel.Models
     {
         public PointModel()
         {
+            Bounces = new List<BounceModel>();
+
             Id = Guid.NewGuid();
+            Ticks = DateTime.UtcNow.Ticks;
         }
         public Guid Id { get; set; }
 
         public Guid GameId { get; set; }
         public Side SideToAward { get; set; }
-        public ulong Ticks { get; set; }
+        public long Ticks { get; set; }
         public List<BounceModel> Bounces { get; set; }
     }
 }
