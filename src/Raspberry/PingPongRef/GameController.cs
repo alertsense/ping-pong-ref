@@ -1,13 +1,17 @@
 ﻿using AlertSense.PingPong.Raspberry.IO;
 using System;
+using ServiceStack;
 
 namespace AlertSense.PingPong.Raspberry
 {
+
     public class GameController : IDisposable
     {
         private bool _t1LedOn = false;
         private ITableConnection _table1;
         private ITableConnection _table2;
+
+        private IRestClient _restClient;
 
         private DateTime? _buttonDownOn;
 
@@ -18,6 +22,7 @@ namespace AlertSense.PingPong.Raspberry
             _table1.ButtonPressed += Table_ButtonPressed;
             _table1.Open();
 
+            Console.Clear();
         }
 
         void Table_ButtonPressed(object sender, ButtonEventArgs e)
@@ -29,7 +34,7 @@ namespace AlertSense.PingPong.Raspberry
             {
                 var elapsed = DateTime.Now.Subtract(_buttonDownOn.Value).TotalMilliseconds;
 
-                if (elapsed < 200)
+                if (elapsed < 500)
                 {
                     // Single button press
                     _t1LedOn = !_t1LedOn;
