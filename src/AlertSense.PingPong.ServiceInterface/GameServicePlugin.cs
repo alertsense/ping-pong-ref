@@ -35,6 +35,7 @@ namespace AlertSense.PingPong.ServiceInterface
             container.RegisterAs<GameRepository, IGameRepository>();
             container.RegisterAs<GameManager, IGameManager>();
             container.RegisterAs<GameManagerFactory, IGameManagerFactory>();
+            container.RegisterAs<SpectateManager, ISpectateManager>();
 
             // register our service with our app host
             appHost.RegisterService<GameService>();

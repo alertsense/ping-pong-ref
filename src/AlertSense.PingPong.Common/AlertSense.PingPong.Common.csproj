@@ -62,6 +62,7 @@
     <Compile Include="Entities\Bounce.cs" />
     <Compile Include="Entities\Point.cs" />
     <Compile Include="Extensions\Mappers.cs" />
+    <Compile Include="Interfaces\ISpectateManager.cs" />
     <Compile Include="Interfaces\IAuditEntity.cs" />
     <Compile Include="Interfaces\IGameManager.cs" />
     <Compile Include="Interfaces\IGameManagerFactory.cs" />

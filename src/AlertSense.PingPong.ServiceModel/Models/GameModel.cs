@@ -1,6 +1,6 @@
-﻿using System;
+﻿using AlertSense.PingPong.ServiceModel.Enums;
+using System;
 using System.Collections.Generic;
-using AlertSense.PingPong.ServiceModel.Enums;
 
 namespace AlertSense.PingPong.ServiceModel.Models
 {
@@ -10,8 +10,10 @@ namespace AlertSense.PingPong.ServiceModel.Models
         {
             Players = new List<PlayerModel>();
             Points = new List<PointModel>();
-           
+            Created = DateTime.UtcNow.Ticks;
         }
+
+        public long Created { get; set; }
 
         public Guid Id { get; set; }
         public List<PlayerModel> Players { get; set; }
@@ -31,12 +33,18 @@ namespace AlertSense.PingPong.ServiceModel.Models
         public bool IsServe { get; set; }
         public GameState GameState { get; set; }
 
+        public string GameStateString
+        {
+            get { return GameState.ToString(); }
+        }
+
         // Side Hitting the ball
         public Side Striker { get; set; }
 
         public Side NotStriker
         {
-            get {
+            get
+            {
                 return Striker == Side.One ? Side.Two : Side.One;
             }
         }

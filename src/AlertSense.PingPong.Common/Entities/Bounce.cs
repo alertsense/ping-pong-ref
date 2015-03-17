@@ -17,6 +17,6 @@ namespace AlertSense.PingPong.Common.Entities
 
         public Side Side { get; set; }
 
-        public ulong Ticks { get; set; }
+        public long Ticks { get; set; }
     }
 }
