@@ -1,6 +1,11 @@
-﻿using AlertSense.PingPong.ServiceInterface;
+﻿using System;
+using System.Configuration;
+using AlertSense.PingPong.ServiceInterface;
 using Funq;
 using ServiceStack;
+using ServiceStack.Messaging;
+using ServiceStack.RabbitMq;
+using AlertSense.PingPong.Common.Messages;
 
 namespace AlertSense.PingPong
 {
@@ -22,11 +27,28 @@ namespace AlertSense.PingPong
         /// <param name="container"></param>
         public override void Configure(Container container)
         {
-            // register our game service, includes registering any dependencies that it needs within our plugin's configuration
-            Plugins.Add(new GameServicePlugin());
             //Config examples
             //this.Plugins.Add(new PostmanFeature());
             //this.Plugins.Add(new CorsFeature());
+
+            // Configure RabbitMQ as our messaging service
+            bool useRabbitMq;
+            Boolean.TryParse(ConfigurationManager.AppSettings["UseRabbitMq"], out useRabbitMq);
+            if (useRabbitMq)
+            {
+                container.Register<IMessageService>(x => new RabbitMqServer(
+                        ConfigurationManager.AppSettings["RabbitMqConnectionString"],
+                        ConfigurationManager.AppSettings["RabbitMqUsername"],
+                        ConfigurationManager.AppSettings["RabbitMqPassword"]
+                    ));
+
+                var mqServer = container.Resolve<IMessageService>();
+                mqServer.RegisterHandler<BounceMessage>(ServiceController.ExecuteMessage);
+                mqServer.Start();
+            }
+
+            // register our game service, includes registering any dependencies that it needs within our plugin's configuration
+            Plugins.Add(new GameServicePlugin());
         }
     }
 }

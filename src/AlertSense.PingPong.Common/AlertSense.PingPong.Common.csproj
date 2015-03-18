@@ -62,12 +62,14 @@
     <Compile Include="Entities\Bounce.cs" />
     <Compile Include="Entities\Point.cs" />
     <Compile Include="Extensions\Mappers.cs" />
+    <Compile Include="Interfaces\IBounceService.cs" />
     <Compile Include="Interfaces\ISpectateManager.cs" />
     <Compile Include="Interfaces\IAuditEntity.cs" />
     <Compile Include="Interfaces\IGameManager.cs" />
     <Compile Include="Interfaces\IGameManagerFactory.cs" />
     <Compile Include="Interfaces\IGameRepository.cs" />
     <Compile Include="Interfaces\IGameService.cs" />
+    <Compile Include="Messages\BounceMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
