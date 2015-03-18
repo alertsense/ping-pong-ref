@@ -1,77 +1,50 @@
 ﻿using System;
-using System.Threading;
 using Raspberry.IO.GeneralPurpose;
 
 namespace AlertSense.PingPong.Raspberry.IO
 {
-    public interface ITableConnection: IDisposable
-    {
-        TableSettings Settings { get; set; }
-        void Open();
-        void Close();
-    }
-
     public class TableConnection : ITableConnection
     {
-        //TODO: Add left and right bounce events
-
         private GpioConnection _gpioConnection;
 
+        public event EventHandler<BounceEventArgs> Bounce;
+        public event EventHandler<ButtonEventArgs> ButtonPressed;
         public TableSettings Settings { get; set; }
+
+        public string Name { get; set; }
 
         public void Open()
         {
             if (Settings == null)
                 throw new Exception("Settings must not be null");
 
-            //Settings.Driver = GpioConnectionSettings.DefaultDriver;
-            var driver = GpioConnectionSettings.DefaultDriver;
-            driver.Allocate(Settings.LeftReadyPin, PinDirection.Output);
-            driver.Allocate(Settings.LeftButtonPin, PinDirection.Input);
-            //for (int i = 0; i < 10; i++)
-            while(true)
-            {
-                driver.Wait(Settings.LeftButtonPin, true, 1000 * 60);
-                driver.Write(Settings.LeftReadyPin, true);
-                Thread.Sleep(200);
-                driver.Wait(Settings.LeftButtonPin, false, 1000 * 60);
-                
-                driver.Wait(Settings.LeftButtonPin, true, 1000 * 60);
-                driver.Write(Settings.LeftReadyPin, false);
-                Thread.Sleep(200);
-                driver.Wait(Settings.LeftButtonPin, false, 1000 * 60);
-            }
+            _gpioConnection = new GpioConnection(new GpioConnectionSettings { Driver = Settings.Driver });
 
-            driver.Release(Settings.LeftReadyPin);
-            //Console.WriteLine("Allocate Input Pin");
-            //Settings.Driver = GpioConnectionSettings.DefaultDriver;
-            //Settings.Driver.Allocate(Settings.LeftBouncePin,PinDirection.Input);
-            //Console.WriteLine("Pin Ready");
-            //var cnt = 0;
-            //try
-            //{
-            //    while (true)
-            //    {
-            //        Console.WriteLine("Waiting for a bounce...");
-            //        Settings.Driver.Wait(Settings.LeftBouncePin, true, 1000 * 60);
-            //        cnt++;
-            //        Console.WriteLine("Bounce {0}", cnt);
-            //    }
-            //}
-            //finally
-            //{
-            //    Settings.Driver.Release(Settings.LeftBouncePin);
-            //}
-            
-            //_gpioConnection = new GpioConnection(new GpioConnectionSettings { Driver = Settings.Driver, PollInterval = 1});
-
-            //var leftBouncePinConfig = Settings.LeftBouncePin.Input().OnStatusChanged(b => { if (b) Console.WriteLine("Left Bounce"); });
-            ////TODO: Configure GPIO Pins from TableSettings
-            //_gpioConnection.Add(leftBouncePinConfig);
-            //_gpioConnection.Open();
+            var buttonConfig = Settings.LeftButtonPin.Input().Name(ButtonName).OnStatusChanged(Button_StatusChanged);
+            Console.WriteLine("Pin {0} configured for input.", Settings.LeftButtonPin);
+            var ledConfig = Settings.LeftLedPin.Output().Name(LedName);
+            Console.WriteLine("Pin {0} configured for output.", Settings.LeftLedPin);
+            _gpioConnection.Add(buttonConfig);
+            _gpioConnection.Add(ledConfig);
+            _gpioConnection.Open();
 
         }
 
+        void Button_StatusChanged(bool value)
+        {
+            OnButtonPressed(new ButtonEventArgs(value));
+        }
+
+        string ButtonName
+        {
+            get { return Name + "_Button"; }
+        }
+
+        string LedName
+        {
+            get { return Name + "_Led"; }
+        }
+        
         public void Close()
         {
             _gpioConnection.Close();
@@ -80,6 +53,23 @@ namespace AlertSense.PingPong.Raspberry.IO
         public void Dispose()
         {
             Close();
+        }
+
+        private void OnBounce(BounceEventArgs e)
+        {
+            if (Bounce != null)
+                Bounce(this, e);
+        }
+
+        private void OnButtonPressed(ButtonEventArgs e)
+        {
+            if (ButtonPressed != null)
+                ButtonPressed(this, e);
+        }
+        
+        public void Led(bool on)
+        {
+            _gpioConnection[LedName] = on;
         }
     }
 }

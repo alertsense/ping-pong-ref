@@ -10,15 +10,16 @@ namespace AlertSense.PingPong.Raspberry.IO
         static readonly Dictionary<Type, Type> Connections = new Dictionary<Type, Type>();
         static readonly IGpioConnectionDriver Driver = GpioConnectionSettings.DefaultDriver;
 
-        public static ITableConnection GetTableConnection()
+        public static ITableConnection GetTableConnection(string name)
         {
             Type connectionType = null;
             if (!Connections.TryGetValue(typeof (ITableConnection), out connectionType))
                 throw new Exception("ITableConnection not registered with factory");
 
             var tableConnection = (ITableConnection) Activator.CreateInstance(connectionType);
-            Console.WriteLine("Setting the Settings");
+            tableConnection.Name = name;
             tableConnection.Settings = TableSettings.Default;
+
             return tableConnection;
         }
 

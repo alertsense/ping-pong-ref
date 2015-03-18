@@ -39,7 +39,7 @@ namespace AlertSense.PingPong.Raspberry {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AlertSense.PingPongRef.Raspberry.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AlertSense.PingPong.Raspberry.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,9 +61,14 @@ namespace AlertSense.PingPong.Raspberry {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to +-+-+-+-+ +-+-+-+-+ +-+-+-+
-        ///|P|i|n|g| |P|o|n|g| |R|e|f|
-        ///+-+-+-+-+ +-+-+-+-+ +-+-+-+.
+        ///   Looks up a localized string similar to   _____ _               _____                    _____       __ 
+        /// |  __ (_)             |  __ \                  |  __ \     / _|
+        /// | |__) | _ __   __ _  | |__) |__  _ __   __ _  | |__) |___| |_ 
+        /// |  ___/ | &apos;_ \ / _` | |  ___/ _ \| &apos;_ \ / _` | |  _  // _ \  _|
+        /// | |   | | | | | (_| | | |  | (_) | | | | (_| | | | \ \  __/ |  
+        /// |_|   |_|_| |_|\__, | |_|   \___/|_| |_|\__, | |_|  \_\___|_|  
+        ///                 __/ |                    __/ |                 
+        ///                |___/                    |___/.
         /// </summary>
         internal static string Banner {
             get {
@@ -72,7 +77,7 @@ namespace AlertSense.PingPong.Raspberry {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Press any key to terminate.
+        ///   Looks up a localized string similar to Press any key to terminate..
         /// </summary>
         internal static string Instructions {
             get {

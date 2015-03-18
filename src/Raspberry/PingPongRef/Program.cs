@@ -12,10 +12,9 @@ namespace AlertSense.PingPong.Raspberry
 
             ConnectionFactory.AddConnection<ITableConnection, TableConnection>();
 
-            using (var table = ConnectionFactory.GetTableConnection()) {
-                
-                table.Open();
-
+            using (var game = new GameController()) 
+            {
+                game.Start();
                 Console.WriteLine(Resources.Instructions);
                 Console.ReadLine();
             }
