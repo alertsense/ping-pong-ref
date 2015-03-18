@@ -31,13 +31,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Raspberry.IO">
-      <HintPath>..\..\..\..\pi\Mono\MyGarage\libraries\raspberry-sharp\Raspberry.IO.dll</HintPath>
+      <HintPath>..\libraries\raspberry-sharp\Raspberry.IO.dll</HintPath>
     </Reference>
     <Reference Include="Raspberry.IO.Components">
-      <HintPath>..\..\..\..\pi\Mono\MyGarage\libraries\raspberry-sharp\Raspberry.IO.Components.dll</HintPath>
+      <HintPath>..\libraries\raspberry-sharp\Raspberry.IO.Components.dll</HintPath>
     </Reference>
     <Reference Include="Raspberry.IO.GeneralPurpose">
-      <HintPath>..\..\..\..\pi\Mono\MyGarage\libraries\raspberry-sharp\Raspberry.IO.GeneralPurpose.dll</HintPath>
+      <HintPath>..\libraries\raspberry-sharp\Raspberry.IO.GeneralPurpose.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

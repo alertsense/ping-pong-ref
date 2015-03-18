@@ -20,7 +20,7 @@ namespace AlertSense.PingPong.Raspberry.Models
                 {
                    ButtonClickTime = 500,
                    PressAndHoldTime = 2000,
-                   ApiUri = "http://localhost:60461/api/"
+                   ApiUri = "http://192.168.1.19/api/"
                 };
             }
         }
