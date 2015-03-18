@@ -11,10 +11,12 @@ namespace AlertSense.PingPong.Raspberry
     public class GameBoard : IGameBoard
     {
         private IDictionary<string, Coordinates> _coordinates;
+        private Coordinates _outputCoords;
 
         public GameBoard()
         {
             _coordinates = new Dictionary<string, Coordinates>();
+            _outputCoords = new Coordinates {Left = 0, Top = 22};
         }
         
         public void DrawInititalScreen(Table table1, Table table2)
@@ -74,10 +76,17 @@ namespace AlertSense.PingPong.Raspberry
             Console.Write("[LED-" + table.Settings.LedPin + "]");
 
             Console.SetCursorPosition(coords.Left + 16, coords.Top + 3);
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Write("[BNC-" + table.Settings.BouncePin + "]");
 
+            Console.SetCursorPosition(_outputCoords.Left, _outputCoords.Top);
+        }
+
+        public void UpdateGame(Game game)
+        {
             Console.SetCursorPosition(0, 20);
+            Console.Write("Game Id: {0}", game.Id.ToString("D"));
+            Console.SetCursorPosition(_outputCoords.Left, _outputCoords.Top);
         }
 
         private class Coordinates

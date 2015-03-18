@@ -24,6 +24,7 @@ namespace AlertSense.PingPong.Raspberry
             Board.DrawInititalScreen(Table1, Table2);
 
             _game = CreateGame();
+            Board.UpdateGame(_game);
             _table1 = OpenTableConnection(Table1);
             _table2 = OpenTableConnection(Table2);
         }
@@ -68,20 +69,46 @@ namespace AlertSense.PingPong.Raspberry
 
                 if (conn.Table.ButtonDuration < Settings.ButtonClickTime)
                 {
-                    //var response = RestClient.Post(new AlertSense.PingPong.ServiceModel.CreatePointRequest {
-                    //    GameId = _game.Id,
-                    //    ScoringSide = conn.Table.Name == "Table1" ? ServiceModel.Enums.Side.One : ServiceModel.Enums.Side.Two
-                    //});
-                    
-                    conn.Table.ServiceLight = !conn.Table.ServiceLight;
                     conn.Table.Message = "Button pressed once";
-                    conn.Update();
+
+                    try
+                    {
+                        var response = RestClient.Post(new AlertSense.PingPong.ServiceModel.CreatePointRequest
+                          {
+                              GameId = _game.Id,
+                              ScoringSide = conn.Table.Name == "Table1" ? ServiceModel.Enums.Side.One : ServiceModel.Enums.Side.Two
+                          });
+                        Table1.ServiceLight = response.CurrentServer == ServiceModel.Enums.Side.One;
+                        Table2.ServiceLight = response.CurrentServer == ServiceModel.Enums.Side.Two;
+                    }
+                    catch (Exception ex)
+                    {
+                        Board.ShowWarning("Failed to add a point. " + ex.Message);
+                    }
+                    
+                    _table1.Update();
+                    _table2.Update();
                 }
                 else if (conn.Table.ButtonDuration > Settings.PressAndHoldTime)
                 {
-                    //TODO: Call API
                     conn.Table.Message = "Button held down.";
-                    conn.Update();
+                    try
+                    {
+
+                        var response = RestClient.Post(new AlertSense.PingPong.ServiceModel.RemoveLastPointRequest()
+                        {
+                            GameId = _game.Id
+                        });
+                        Table1.ServiceLight = response.CurrentServer == ServiceModel.Enums.Side.One;
+                        Table2.ServiceLight = response.CurrentServer == ServiceModel.Enums.Side.Two;
+                    }
+                    catch (Exception ex)
+                    {
+                        Board.ShowWarning("Failed to remove last point. " + ex.Message);
+                    }
+
+                    _table1.Update();
+                    _table2.Update();
                 }
                 conn.Table.ButtonLastPressed = null;
             }
