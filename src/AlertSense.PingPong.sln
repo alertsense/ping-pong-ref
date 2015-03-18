@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Make", "Make", "{613B6AA0-A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPong.ServiceInterface.IntegrationTests", "AlertSense.PingPong.ServiceInterface.IntegrationTests\AlertSense.PingPong.ServiceInterface.IntegrationTests.csproj", "{F31E6D06-D189-45B0-8713-DE5071015811}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertSense.PingPong.Raspberry.Models", "AlertSense.PingPong.Raspberry.Models\AlertSense.PingPong.Raspberry.Models.csproj", "{4C7B2444-3A54-4735-BD18-C4812428ADC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{F31E6D06-D189-45B0-8713-DE5071015811}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F31E6D06-D189-45B0-8713-DE5071015811}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F31E6D06-D189-45B0-8713-DE5071015811}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C7B2444-3A54-4735-BD18-C4812428ADC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C7B2444-3A54-4735-BD18-C4812428ADC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C7B2444-3A54-4735-BD18-C4812428ADC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C7B2444-3A54-4735-BD18-C4812428ADC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,5 +102,6 @@ Global
 		{26075A83-F419-4918-8DC9-340B8EEFCFB6} = {72C1F5BF-E531-40CC-854F-0C19B6CC02A6}
 		{A098FF80-F8BC-4242-A96D-EB0E9187B18E} = {72C1F5BF-E531-40CC-854F-0C19B6CC02A6}
 		{F31E6D06-D189-45B0-8713-DE5071015811} = {624F2491-CD05-4808-8E37-B75988647FB9}
+		{4C7B2444-3A54-4735-BD18-C4812428ADC7} = {72C1F5BF-E531-40CC-854F-0C19B6CC02A6}
 	EndGlobalSection
 EndGlobal

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Raspberry.IO.GeneralPurpose;
 using System.ComponentModel;
+using AlertSense.PingPong.Raspberry.Models;
 
 namespace AlertSense.PingPong.Raspberry.IO
 {
@@ -24,8 +25,8 @@ namespace AlertSense.PingPong.Raspberry.IO
             if (Settings == null)
                 throw new Exception("Settings must not be null");
             Settings.Driver = GpioConnectionSettings.DefaultDriver;
-            Settings.Driver.Allocate(Settings.LeftLedPin, PinDirection.Output);
-            Console.WriteLine("Allocated pin {0} for output.", Settings.LeftLedPin);
+            Settings.Driver.Allocate(Settings.LedPin, PinDirection.Output);
+            Console.WriteLine("Allocated pin {0} for output.", Settings.LedPin);
 
             bounceWorker = new System.ComponentModel.BackgroundWorker();
             bounceWorker.WorkerSupportsCancellation = true;
@@ -55,13 +56,13 @@ namespace AlertSense.PingPong.Raspberry.IO
         {
             Console.WriteLine("Begin bounceWorker_DoWork");
             var worker = sender as BackgroundWorker;
-            Settings.Driver.Allocate(Settings.LeftButtonPin, PinDirection.Input);
-            Console.WriteLine("Allocated pin {0} for input.", Settings.LeftButtonPin);
+            Settings.Driver.Allocate(Settings.ButtonPin, PinDirection.Input);
+            Console.WriteLine("Allocated pin {0} for input.", Settings.ButtonPin);
             try
             {
                 while (!worker.CancellationPending)
                 {
-                    var buttonValue = Settings.Driver.Read(Settings.LeftButtonPin);
+                    var buttonValue = Settings.Driver.Read(Settings.ButtonPin);
 
                     if (lastButtonValue != buttonValue)
                     {
@@ -77,8 +78,8 @@ namespace AlertSense.PingPong.Raspberry.IO
             }
             finally
             {
-                Settings.Driver.Release(Settings.LeftButtonPin);
-                Console.WriteLine("Released pin {0}.", Settings.LeftButtonPin);
+                Settings.Driver.Release(Settings.ButtonPin);
+                Console.WriteLine("Released pin {0}.", Settings.ButtonPin);
             }
 
             if (worker.CancellationPending)
@@ -89,7 +90,7 @@ namespace AlertSense.PingPong.Raspberry.IO
         public void Close()
         {
             //_gpioConnection.Close();
-            Settings.Driver.Release(Settings.LeftLedPin); 
+            Settings.Driver.Release(Settings.LedPin); 
             Console.WriteLine("Closing TableConnection");
             bounceWorker.CancelAsync();
         }
@@ -113,9 +114,21 @@ namespace AlertSense.PingPong.Raspberry.IO
         
         public void Led(bool on)
         {
-            Settings.Driver.Write(Settings.LeftLedPin, on);
+            Settings.Driver.Write(Settings.LedPin, on);
         }
 
         public string Name { get; set; }
+
+        public Table Table
+        {
+            get;
+            set;
+        }
+
+
+        public void Update()
+        {
+            Led(Table.ServiceLight);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Raspberry.IO.GeneralPurpose;
+using AlertSense.PingPong.Raspberry.Models;
 
 namespace AlertSense.PingPong.Raspberry.IO
 {
@@ -9,25 +10,21 @@ namespace AlertSense.PingPong.Raspberry.IO
 
         public event EventHandler<BounceEventArgs> Bounce;
         public event EventHandler<ButtonEventArgs> ButtonPressed;
-        public TableSettings Settings { get; set; }
-
-        public string Name { get; set; }
+        public Table Table { get; set; }
 
         public void Open()
         {
-            if (Settings == null)
+            if (Table.Settings == null)
                 throw new Exception("Settings must not be null");
 
-            _gpioConnection = new GpioConnection(new GpioConnectionSettings { Driver = Settings.Driver });
+            var settings = Table.Settings;
+            var buttonConfig = settings.ButtonPin.Input().Name(ButtonName).OnStatusChanged(Button_StatusChanged);
+            var ledConfig = settings.LedPin.Output().Name(LedName);
 
-            var buttonConfig = Settings.LeftButtonPin.Input().Name(ButtonName).OnStatusChanged(Button_StatusChanged);
-            Console.WriteLine("Pin {0} configured for input.", Settings.LeftButtonPin);
-            var ledConfig = Settings.LeftLedPin.Output().Name(LedName);
-            Console.WriteLine("Pin {0} configured for output.", Settings.LeftLedPin);
+            _gpioConnection = new GpioConnection(new GpioConnectionSettings { Driver = settings.Driver });
             _gpioConnection.Add(buttonConfig);
             _gpioConnection.Add(ledConfig);
             _gpioConnection.Open();
-
         }
 
         void Button_StatusChanged(bool value)
@@ -37,12 +34,12 @@ namespace AlertSense.PingPong.Raspberry.IO
 
         string ButtonName
         {
-            get { return Name + "_Button"; }
+            get { return Table.Name + "_Button"; }
         }
 
         string LedName
         {
-            get { return Name + "_Led"; }
+            get { return Table.Name + "_Led"; }
         }
         
         public void Close()
@@ -70,6 +67,11 @@ namespace AlertSense.PingPong.Raspberry.IO
         public void Led(bool on)
         {
             _gpioConnection[LedName] = on;
+        }
+        
+        public void Update()
+        {
+            Led(Table.ServiceLight);
         }
     }
 }

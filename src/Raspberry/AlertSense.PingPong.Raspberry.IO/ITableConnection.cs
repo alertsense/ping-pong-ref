@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AlertSense.PingPong.Raspberry.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,11 @@ namespace AlertSense.PingPong.Raspberry.IO
 {
     public interface ITableConnection : IDisposable
     {
-        string Name { get; set; }
-        TableSettings Settings { get; set; }
+        Table Table { get; set; }
         void Led(bool on);
         void Open();
         void Close();
+        void Update();
 
         event EventHandler<BounceEventArgs> Bounce;
         event EventHandler<ButtonEventArgs> ButtonPressed;

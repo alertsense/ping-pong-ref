@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{26075A83-F419-4918-8DC9-340B8EEFCFB6}</ProjectGuid>
+    <ProjectGuid>{4C7B2444-3A54-4735-BD18-C4812428ADC7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AlertSense.PingPong.Raspberry.IO</RootNamespace>
-    <AssemblyName>AlertSense.PingPong.Raspberry.IO</AssemblyName>
+    <RootNamespace>AlertSense.PingPong.Raspberry.Models</RootNamespace>
+    <AssemblyName>AlertSense.PingPong.Raspberry.Models</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,13 +31,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Raspberry.IO">
-      <HintPath>..\..\libraries\raspberry-sharp\Raspberry.IO.dll</HintPath>
+      <HintPath>..\..\..\..\pi\Mono\MyGarage\libraries\raspberry-sharp\Raspberry.IO.dll</HintPath>
     </Reference>
     <Reference Include="Raspberry.IO.Components">
-      <HintPath>..\..\libraries\raspberry-sharp\Raspberry.IO.Components.dll</HintPath>
+      <HintPath>..\..\..\..\pi\Mono\MyGarage\libraries\raspberry-sharp\Raspberry.IO.Components.dll</HintPath>
     </Reference>
     <Reference Include="Raspberry.IO.GeneralPurpose">
-      <HintPath>..\..\libraries\raspberry-sharp\Raspberry.IO.GeneralPurpose.dll</HintPath>
+      <HintPath>..\..\..\..\pi\Mono\MyGarage\libraries\raspberry-sharp\Raspberry.IO.GeneralPurpose.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,17 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectionFactory.cs" />
-    <Compile Include="ITableConnection.cs" />
-    <Compile Include="TableConnectionRaw.cs" />
-    <Compile Include="TableConnection.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="GameSettings.cs" />
+    <Compile Include="Interfaces\IGameBoard.cs" />
+    <Compile Include="LedState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\AlertSense.PingPong.Raspberry.Models\AlertSense.PingPong.Raspberry.Models.csproj">
-      <Project>{4c7b2444-3a54-4735-bd18-c4812428adc7}</Project>
-      <Name>AlertSense.PingPong.Raspberry.Models</Name>
-    </ProjectReference>
+    <Compile Include="Table.cs" />
+    <Compile Include="TableSettings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

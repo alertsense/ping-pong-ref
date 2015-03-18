@@ -1,64 +1,102 @@
 ﻿using AlertSense.PingPong.Raspberry.IO;
 using System;
 using ServiceStack;
+using AlertSense.PingPong.Raspberry.Models;
 
 namespace AlertSense.PingPong.Raspberry
 {
 
     public class GameController : IDisposable
     {
-        private bool _t1LedOn = false;
+        public Table Table1 { get; set; }
+        public Table Table2 { get; set; }
+        public GameSettings Settings { get; set; }
+        public GameBoard Board { get; set; }
+        public IRestClient RestClient { get; set; }
+
         private ITableConnection _table1;
         private ITableConnection _table2;
 
-        private IRestClient _restClient;
-
-        private DateTime? _buttonDownOn;
+        private Game _game;
 
         public void Start()
         {
-            _table1 = ConnectionFactory.GetTableConnection("Table1");
-            _table1.Bounce += Table_Bounce;
-            _table1.ButtonPressed += Table_ButtonPressed;
-            _table1.Open();
+            Board.DrawInititalScreen(Table1, Table2);
 
-            Console.Clear();
+            _game = CreateGame();
+            _table1 = OpenTableConnection(Table1);
+            _table2 = OpenTableConnection(Table2);
+        }
+
+        private Game CreateGame()
+        {
+            Game game = null;
+            try
+            {
+                var response = RestClient.Post(new AlertSense.PingPong.ServiceModel.CreateGameRequest());
+                game = new Game
+                {
+                    Id = response.Id,
+                    CurrentServingTable = response.CurrentServer == ServiceModel.Enums.Side.One ? "Table1" : "Table2"
+                };
+            }
+            catch (Exception ex)
+            {
+                Board.ShowWarning("Failed to create a new game via the server.  Creating a new local game.");
+                game = new Game { Id = Guid.NewGuid(), CurrentServingTable = "Table1" };
+            }
+            return game;
+        }
+
+        private ITableConnection OpenTableConnection(Table table)
+        {
+            var conn = ConnectionFactory.GetTableConnection(table);
+            conn.Bounce += Table_Bounce;
+            conn.ButtonPressed += Table_ButtonPressed;
+            conn.Open();
+            return conn;
         }
 
         void Table_ButtonPressed(object sender, ButtonEventArgs e)
         {
-            var table = (ITableConnection)sender;
-            Console.WriteLine("ButtonStateChanged: {0}, Now: {1}", e.Enabled, DateTime.Now);
-            
-            if (!e.Enabled && _buttonDownOn.HasValue) 
-            {
-                var elapsed = DateTime.Now.Subtract(_buttonDownOn.Value).TotalMilliseconds;
+            var conn = (ITableConnection)sender;
+            conn.Table.ButtonState = e.Enabled;
 
-                if (elapsed < 500)
+            if (!e.Enabled && conn.Table.ButtonLastPressed.HasValue)
+            {
+                conn.Table.ButtonDuration = DateTime.Now.Subtract(conn.Table.ButtonLastPressed.Value).TotalMilliseconds;
+
+                if (conn.Table.ButtonDuration < Settings.ButtonClickTime)
                 {
-                    // Single button press
-                    _t1LedOn = !_t1LedOn;
-                    _table1.Led(_t1LedOn);
-                    Console.WriteLine("{0}_Button pressed once", table.Name);
-                } 
-                else if (elapsed > 2000)
-                {
-                    // Held down for more than 2 seconds
-                    Console.WriteLine("{0}_Button held down", table.Name);
+                    //var response = RestClient.Post(new AlertSense.PingPong.ServiceModel.CreatePointRequest {
+                    //    GameId = _game.Id,
+                    //    ScoringSide = conn.Table.Name == "Table1" ? ServiceModel.Enums.Side.One : ServiceModel.Enums.Side.Two
+                    //});
+                    
+                    conn.Table.ServiceLight = !conn.Table.ServiceLight;
+                    conn.Table.Message = "Button pressed once";
+                    conn.Update();
                 }
-                Console.WriteLine("{0}_Button pressed and released in {1} milliseconds", table.Name, elapsed);
-                _buttonDownOn = null;
-                return;
-            } 
+                else if (conn.Table.ButtonDuration > Settings.PressAndHoldTime)
+                {
+                    //TODO: Call API
+                    conn.Table.Message = "Button held down.";
+                    conn.Update();
+                }
+                conn.Table.ButtonLastPressed = null;
+            }
+            else
+            {
+                conn.Table.ButtonLastPressed = DateTime.Now;
+            }
             
-            _buttonDownOn = DateTime.Now;
-            Console.WriteLine("{0}_Button Down On: {1}", table.Name, _buttonDownOn);
+            Board.UpdateTable(conn.Table);
         }
 
         void Table_Bounce(object sender, BounceEventArgs e)
         {
             var table = (ITableConnection)sender;
-            Console.WriteLine("{0}_Bounce", table.Name);
+            Console.WriteLine("{0}_Bounce", table.Table.Name);
         }
 
         public void Dispose()
