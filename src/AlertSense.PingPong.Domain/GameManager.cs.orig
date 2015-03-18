@@ -154,10 +154,6 @@ namespace AlertSense.PingPong.Domain
 
         public void AwardPoint(PointModel point)
         {
-            // don't process anymore points after the game is considered complete
-            if (Game.GameState == GameState.Complete)
-                return;
-
             point.Ticks = DateTime.UtcNow.Ticks;
 
             var playerAwarded = (int)point.SideToAward;
@@ -184,6 +180,12 @@ namespace AlertSense.PingPong.Domain
         /// </summary>
         public void RemoveLastPoint()
         {
+<<<<<<< HEAD
+            var lastPoint = Game.RemoveLastPoint();
+
+            if (lastPoint != null && GameRepository != null)
+                GameRepository.DeletePoint(lastPoint.ToPoint());
+=======
             if (Game.Points.Count > 0)
             {
                 var lastPoint = Game.Points[Game.Points.Count - 1];
@@ -191,10 +193,8 @@ namespace AlertSense.PingPong.Domain
 
                 //Adjust score to account for point removal
                 Game.Players[(int)lastPoint.SideToAward].Score--;
-
-	            if (lastPoint != null && GameRepository != null)
-	                GameRepository.DeletePoint(lastPoint.ToPoint());
             }
+>>>>>>> 16ca051e8d8dcb493f831356e3d5ba4a3a9fe0bf
         }
 
         /// <summary>

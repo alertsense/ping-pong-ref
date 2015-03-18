@@ -7,10 +7,12 @@
     <ProjectGuid>{A098FF80-F8BC-4242-A96D-EB0E9187B18E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AlertSense.PingPongRef.Raspberry</RootNamespace>
+    <RootNamespace>AlertSense.PingPong.Raspberry</RootNamespace>
     <AssemblyName>PingPongRef</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,10 +34,35 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\..\packages\RabbitMQ.Client.3.4.0\lib\net35\RabbitMQ.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Raspberry.IO, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\pi\Mono\MyGarage\libraries\raspberry-sharp\Raspberry.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Raspberry.IO.GeneralPurpose, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\pi\Mono\MyGarage\libraries\raspberry-sharp\Raspberry.IO.GeneralPurpose.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Client">
+      <HintPath>..\..\packages\ServiceStack.Client.4.0.38\lib\net40\ServiceStack.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces">
+      <HintPath>..\..\packages\ServiceStack.Interfaces.4.0.38\lib\portable-wp80+sl5+net40+win8+monotouch+monoandroid\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text">
+      <HintPath>..\..\packages\ServiceStack.Text.4.0.38\lib\net40\ServiceStack.Text.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http.WebRequest" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameBoard.cs" />
+    <Compile Include="GameController.cs" />
+    <Compile Include="GameFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -46,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
@@ -54,12 +82,27 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AlertSense.PingPong.Raspberry.Models\AlertSense.PingPong.Raspberry.Models.csproj">
+      <Project>{4c7b2444-3a54-4735-bd18-c4812428adc7}</Project>
+      <Name>AlertSense.PingPong.Raspberry.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AlertSense.PingPong.ServiceModel\AlertSense.PingPong.ServiceModel.csproj">
+      <Project>{53e82ac1-dd1d-4c66-b55f-f9f4acfb2f40}</Project>
+      <Name>AlertSense.PingPong.ServiceModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AlertSense.PingPong.Raspberry.IO\AlertSense.PingPong.Raspberry.IO.csproj">
       <Project>{26075a83-f419-4918-8dc9-340b8eefcfb6}</Project>
       <Name>AlertSense.PingPong.Raspberry.IO</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

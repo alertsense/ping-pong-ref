@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using Raspberry.IO.GeneralPurpose;
+using AlertSense.PingPong.Raspberry.Models;
 
 namespace AlertSense.PingPong.Raspberry.IO
 {
@@ -10,15 +11,15 @@ namespace AlertSense.PingPong.Raspberry.IO
         static readonly Dictionary<Type, Type> Connections = new Dictionary<Type, Type>();
         static readonly IGpioConnectionDriver Driver = GpioConnectionSettings.DefaultDriver;
 
-        public static ITableConnection GetTableConnection()
+        public static ITableConnection GetTableConnection(Table table)
         {
             Type connectionType = null;
             if (!Connections.TryGetValue(typeof (ITableConnection), out connectionType))
                 throw new Exception("ITableConnection not registered with factory");
 
             var tableConnection = (ITableConnection) Activator.CreateInstance(connectionType);
-            Console.WriteLine("Setting the Settings");
-            tableConnection.Settings = TableSettings.Default;
+            tableConnection.Table = table;
+
             return tableConnection;
         }
 

@@ -8,15 +8,11 @@ namespace AlertSense.PingPong.Raspberry
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Resources.Banner);
-
             ConnectionFactory.AddConnection<ITableConnection, TableConnection>();
 
-            using (var table = ConnectionFactory.GetTableConnection()) {
-                
-                table.Open();
-
-                Console.WriteLine(Resources.Instructions);
+            using (var game = GameFactory.CreateGame()) 
+            {
+                game.Start();
                 Console.ReadLine();
             }
         }

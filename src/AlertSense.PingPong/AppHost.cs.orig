@@ -3,12 +3,15 @@ using System.Configuration;
 using AlertSense.PingPong.ServiceInterface;
 using Funq;
 using ServiceStack;
-using ServiceStack.Messaging;
-using ServiceStack.RabbitMq;
-using AlertSense.PingPong.Common.Messages;
+<<<<<<< HEAD
 using ServiceStack.Data;
 using ServiceStack.OrmLite;
 using System.Configuration;
+=======
+using ServiceStack.Messaging;
+using ServiceStack.RabbitMq;
+using AlertSense.PingPong.Common.Messages;
+>>>>>>> 16ca051e8d8dcb493f831356e3d5ba4a3a9fe0bf
 
 namespace AlertSense.PingPong
 {
@@ -30,9 +33,14 @@ namespace AlertSense.PingPong
         /// <param name="container"></param>
         public override void Configure(Container container)
         {
+<<<<<<< HEAD
             string connectionString = ConfigurationManager.ConnectionStrings["PingPong"].ConnectionString;
             container.Register<IDbConnectionFactory>(c => new OrmLiteConnectionFactory(ConfigurationManager.ConnectionStrings["PingPong"].ConnectionString, SqliteDialect.Provider));
 
+            // register our game service, includes registering any dependencies that it needs within our plugin's configuration
+            Plugins.Add(new GameServicePlugin());
+=======
+>>>>>>> 16ca051e8d8dcb493f831356e3d5ba4a3a9fe0bf
             //Config examples
             //this.Plugins.Add(new PostmanFeature());
             //this.Plugins.Add(new CorsFeature());

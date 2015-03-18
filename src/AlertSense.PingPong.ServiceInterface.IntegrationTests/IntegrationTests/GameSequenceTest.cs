@@ -2,11 +2,13 @@
 using AlertSense.PingPong.ServiceModel.Enums;
 using AlertSense.PingPong.ServiceModel.Models;
 using NUnit.Framework;
+using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
@@ -79,10 +81,15 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
             Assert.That(gameState.Players[(int)newGame.InitialServer].Score, Is.EqualTo(1));
         }
 
+        bool localhost = true;
+
         [Test]
         //[Ignore]
         public void GameBounceSequenceTest()
         {
+            if(localhost)
+                Client = new JsonServiceClient("http://localhost/api/");
+
             var game = Client.Post(new CreateGameRequest { });
             Assert.That(game, Is.Not.Null);
 
@@ -143,6 +150,7 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
 
 
         }
+        Random bounceTime = new Random();
 
         public GameModel BounceBall(GameModel game, int bounces)
         {
@@ -156,6 +164,9 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
                     gameState = Client.Post(new CreateBounceRequest { GameId = game.Id, Side = gameState.NotStriker });
                 else
                     gameState = Client.Post(new CreateBounceRequest { GameId = game.Id, Side = Side.None });
+
+                if (localhost)
+                    Thread.Sleep(bounceTime.Next(40, 100));
             }
 
             Debug.WriteLine("\tPlayer 1: {0} to Player 2: {1}", gameState.Players[0].Score, gameState.Players[1].Score);

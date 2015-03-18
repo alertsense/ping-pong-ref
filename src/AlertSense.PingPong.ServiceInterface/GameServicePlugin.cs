@@ -6,11 +6,6 @@ using AlertSense.PingPong.Domain.Factories;
 using ServiceStack;
 using ServiceStack.Data;
 using ServiceStack.OrmLite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AlertSense.PingPong.ServiceInterface
 {
@@ -26,7 +21,7 @@ namespace AlertSense.PingPong.ServiceInterface
 
             //container.Register<IDbConnectionFactory>(c => new OrmLiteConnectionFactory(@"C:\git\ping-pong-ref\src\AlertSense.PingPong.db", SqliteDialect.Provider));
 
-            using(var db = container.Resolve<IDbConnectionFactory>().OpenDbConnection())
+            using (var db = container.Resolve<IDbConnectionFactory>().OpenDbConnection())
             {
                 db.CreateTableIfNotExists<Game>();
                 db.CreateTableIfNotExists<Point>();
@@ -42,6 +37,9 @@ namespace AlertSense.PingPong.ServiceInterface
 
             // register our service with our app host
             appHost.RegisterService<GameService>();
+
+            // Register the Bounce Service with the AppHost
+            appHost.RegisterService<BounceService>();
         }
     }
 }

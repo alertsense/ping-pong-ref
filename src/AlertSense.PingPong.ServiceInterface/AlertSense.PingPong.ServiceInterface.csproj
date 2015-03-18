@@ -72,6 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BounceService.cs" />
     <Compile Include="GameService.cs" />
     <Compile Include="GameServicePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

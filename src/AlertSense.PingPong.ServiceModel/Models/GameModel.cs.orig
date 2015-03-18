@@ -41,6 +41,37 @@ namespace AlertSense.PingPong.ServiceModel.Models
             {
                 return Striker == Side.One ? Side.Two : Side.One;
             }
-        }        
+        }
+<<<<<<< HEAD
+
+
+        /// <summary>
+        /// Desigante the next player to hit the ball which then specifies a valid bounce.
+        /// </summary>
+        public void ChangeStriker()
+        {
+            Striker = Striker == Side.One ? Side.Two : Side.One;
+        }
+
+
+        /// <summary>
+        /// Remove last awarded point and adjsut corresponding player's score
+        /// </summary>
+        public PointModel RemoveLastPoint()
+        {
+            if (Points.Count > 0)
+            {
+                var lastPoint = Points[Points.Count - 1];
+                Points.RemoveAt(Points.Count - 1);
+
+                //Adjust score to account for point removal
+                Players[(int)lastPoint.SideToAward].Score--;
+
+                return lastPoint;
+            }
+            return null;
+        }
+=======
+>>>>>>> 16ca051e8d8dcb493f831356e3d5ba4a3a9fe0bf
     }
 }

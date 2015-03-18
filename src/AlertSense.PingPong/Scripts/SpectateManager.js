@@ -32,8 +32,6 @@
             // Game Over, Congratulate Winner
             $winSide.html(model.Players[0].Score > model.Players[1].Score ? "One" : "Two");
             $winModal.modal('show');
-            // Stop listening for events from the server
-            $.connection.hub.stop();
         }
     };
 
@@ -62,13 +60,32 @@
         for (var i = 0; i < model.Points.length; i++) {
             var point = model.Points[i];
 
-            var pointMilliseconds = point.Ticks / ticksPerMillisecond;
+            // Process Bounces for point
+            for (var j = 0; j < point.Bounces.length; j++) {
+                var bounce = point.Bounces[j];
 
-            var sideOneInfo = point.SideToAward == 0 ? "Point Awarded" : "";
-            var time = ((pointMilliseconds - createdMilliseconds) / 1000).toFixed(3);
-            var sideTwoInfo = point.SideToAward == 1 ? "Point Awarded" : "";
+                insertTableRow(bounce.Side, bounce.Ticks, "Bounce", createdMilliseconds);
+            }
 
-            $infoTable.find('tbody').prepend('<tr><td>' + sideOneInfo + '</td><td>' + time + '</td><td>' + sideTwoInfo + '</td></tr>');
+            insertTableRow(point.SideToAward, point.Ticks, "Point Awarded", createdMilliseconds);
         }
+
+        if (model.GameState == 0) {
+            // Process CurrentPoint Bounces
+            for (var k = 0; k < model.CurrentPoint.Bounces.length; k++) {
+                var currentBounce = model.CurrentPoint.Bounces[k];
+
+                insertTableRow(currentBounce.Side, currentBounce.Ticks, "Bounce", createdMilliseconds);
+            }
+        }
+    };
+
+    var insertTableRow = function(side, currentTicks, message, createdMilliseconds) {
+        var currentMilliseconds = currentTicks / ticksPerMillisecond;
+        var sideOneInfo = side == 0 ? message : "";
+        var sideTwoInfo = side == 1 ? message : "";
+        var time = ((currentMilliseconds - createdMilliseconds) / 1000).toFixed(3);
+
+        $infoTable.find('tbody').prepend('<tr><td>' + sideOneInfo + '</td><td>' + time + '</td><td>' + sideTwoInfo + '</td></tr>');
     };
 })(window.spectateManager = window.spectateManager || {}, jQuery);

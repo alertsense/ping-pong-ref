@@ -1,10 +1,10 @@
-﻿using AlertSense.PingPong.Common.Interfaces;
+﻿#define GameFactoryManager
+using AlertSense.PingPong.Common.Interfaces;
 using AlertSense.PingPong.Domain;
 using AlertSense.PingPong.ServiceModel;
 using AlertSense.PingPong.ServiceModel.Models;
 using ServiceStack;
 
-//#define GameFactoryManager
 using System;
 
 namespace AlertSense.PingPong.ServiceInterface
@@ -73,8 +73,10 @@ namespace AlertSense.PingPong.ServiceInterface
 #endif
 
             GameManager.RemoveLastPoint();
+            var gameModel = GameManager.GetGameModel();
+            SpectateManager.Update(gameModel);
 
-            return GameManager.GetGameModel().ConvertTo<RemoveLastPointResponse>();
+            return gameModel.ConvertTo<RemoveLastPointResponse>();
         }
 
         public CreateBounceResponse Post(CreateBounceRequest request)
@@ -84,8 +86,10 @@ namespace AlertSense.PingPong.ServiceInterface
 #endif
 
             GameManager.ProcessBounce(request.ConvertTo<BounceModel>());
+            var gameModel = GameManager.GetGameModel();
+            SpectateManager.Update(gameModel);
 
-            return GameManager.GetGameModel().ConvertTo<CreateBounceResponse>();
+            return gameModel.ConvertTo<CreateBounceResponse>();
         }
     }
 }
