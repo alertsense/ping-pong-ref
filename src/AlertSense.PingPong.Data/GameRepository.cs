@@ -57,17 +57,22 @@ namespace AlertSense.PingPong.Data
             return game;
         }
 
+        public bool DeletePoint(Point point)
+        {
+            foreach(var bounce in point.Bounces)
+                DbConnection.Delete<Bounce>(bounce);
+
+            return DbConnection.Delete<Point>(point) > 0;
+        }
+
+
+
         public bool DeleteGame(Game game)
         {
             throw new NotImplementedException();
         }
 
         public Point SavePoint(Point point)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool DeletePoint(Point point)
         {
             throw new NotImplementedException();
         }

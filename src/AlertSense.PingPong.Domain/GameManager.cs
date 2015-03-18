@@ -183,7 +183,10 @@ namespace AlertSense.PingPong.Domain
 
         public void RemoveLastPoint()
         {
-            Game.RemoveLastPoint();
+            var lastPoint = Game.RemoveLastPoint();
+
+            if (lastPoint != null && GameRepository != null)
+                GameRepository.DeletePoint(lastPoint.ToPoint());
         }
 
         /// <summary>

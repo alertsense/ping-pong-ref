@@ -1,6 +1,9 @@
 ﻿using AlertSense.PingPong.ServiceInterface;
 using Funq;
 using ServiceStack;
+using ServiceStack.Data;
+using ServiceStack.OrmLite;
+using System.Configuration;
 
 namespace AlertSense.PingPong
 {
@@ -22,6 +25,9 @@ namespace AlertSense.PingPong
         /// <param name="container"></param>
         public override void Configure(Container container)
         {
+            string connectionString = ConfigurationManager.ConnectionStrings["PingPong"].ConnectionString;
+            container.Register<IDbConnectionFactory>(c => new OrmLiteConnectionFactory(ConfigurationManager.ConnectionStrings["PingPong"].ConnectionString, SqliteDialect.Provider));
+
             // register our game service, includes registering any dependencies that it needs within our plugin's configuration
             Plugins.Add(new GameServicePlugin());
             //Config examples

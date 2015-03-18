@@ -62,7 +62,7 @@ namespace AlertSense.PingPong.ServiceModel.Models
         /// <summary>
         /// Remove last awarded point and adjsut corresponding player's score
         /// </summary>
-        public void RemoveLastPoint()
+        public PointModel RemoveLastPoint()
         {
             if (Points.Count > 0)
             {
@@ -70,8 +70,11 @@ namespace AlertSense.PingPong.ServiceModel.Models
                 Points.RemoveAt(Points.Count - 1);
 
                 //Adjust score to account for point removal
-                Players[(int)lastPoint.SideToAward].Score--;  
+                Players[(int)lastPoint.SideToAward].Score--;
+
+                return lastPoint;
             }
+            return null;
         }
     }
 }
