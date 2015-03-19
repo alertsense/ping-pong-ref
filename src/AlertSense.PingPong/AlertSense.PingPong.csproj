@@ -178,6 +178,7 @@
     <Content Include="sqlite3.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Styles\bounce.css" />
     <Content Include="Styles\main.css" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

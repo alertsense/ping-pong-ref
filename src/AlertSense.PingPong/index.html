@@ -15,6 +15,7 @@
 
     <!-- Custom styles for this template -->
     <link href="Styles/main.css" rel="stylesheet">
+    <link href="Styles/bounce.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -22,80 +23,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style>
-        .ball-wrap {
-        }
-
-        .ball {
-            border-radius: 30px;
-            height: 60px;
-            width: 60px;
-            background-color: #0073CF;
-            background-image: url(https://alertsenseadmin.blob.core.windows.net/alertsense-admin-region/alertsense_75x75.png);
-            background-size: 75%;
-            background-repeat: no-repeat;
-            background-position: center center;
-            /*transition: all 1s ease;*/
-            /*position: relative;*/
-            /*animation: bounce 1.2s ease-out;*/
-        }
-
-        @-webkit-keyframes horizontal {
-            from {
-               -webkit-transform: translateX(0px) rotate(0deg);
-               -webkit-animation-timing-function: ease-out;
-            }
-
-            50% {
-                -webkit-transform: translateX(150px, -100px) rotate(180deg);
-                -webkit-animation-timing-function: ease-out;
-            }
-
-            to {
-                -webkit-transform: translateX(300px) rotate(360deg);
-                -webkit-animation-timing-function: ease-out;
-            }
-        }
-        @-webkit-keyframes vertical {
-            from {
-               -webkit-transform: translateY(0px) rotate(0deg);
-               -webkit-animation-timing-function: ease-out;
-            }
-
-            50% {
-                -webkit-transform: translateY(-100px) rotate(180deg);
-                -webkit-animation-timing-function: ease-out;
-            }
-
-            to {
-                -webkit-transform: translateY(0px) rotate(360deg);
-                -webkit-animation-timing-function: ease-out;
-            }
-        }
-
-        .bounce {
-            /*-webkit-animation-name: bounce;
-            -webkit-animation-duration: 2s;
-            -webkit-animation-timing-function: ease-out;*/
-            -webkit-animation: horizontal 2s ease-out infinite;
-            
-            /*transform: rotate(360deg);*/
-            /*transform: translate(150px, 100px);*/
-
-        }
-        .bounce .ball {
-            /*-webkit-animation-name: bounce;
-            -webkit-animation-duration: 2s;
-            -webkit-animation-timing-function: ease-out;*/
-            
-            -webkit-animation: vertical 2s ease-in infinite;
-            /*transform: rotate(360deg);*/
-            /*transform: translate(150px, 100px);*/
-
-        }
-        /*.bounce, .bounce .ball {
-            margin-left: 400px;
-            transform: rotate(360deg);
-        }*/
+        
     </style>
 </head>
 
@@ -109,10 +37,13 @@
                     <img src="Images/logo_422_120.png" alt="AlertSense Logo" />
                 </div>
             </div>
-            <div class="ball-wrap">
+            <div class="ball-horizontal">
+			<div class="ball-vertical">
                 <div class="ball">
 
                 </div>
+                </div>
+				</div>
                 <div class="inner cover">
                     <div class="row">
                         <div class="col-md-6 side1"><h2>Side One</h2></div>
@@ -180,14 +111,27 @@
         <script src="signalr/hubs"></script>
         <script src="Scripts/SpectateManager.js"></script>
         <script type="text/javascript">
-            window.spectateManager.init();
+            //window.spectateManager.init();
             $().ready(function ()
             {
-                $(".ball-wrap").click(function ()
+                $(".ball-horizontal").click(function ()
                 {
-                    $(this).toggleClass("bounce");
+					$(this).removeClass("bounce");					
+					setTimeout(animate, 10);
                 });
             });
+			
+			function animate()
+			{
+				var element = $(".ball-horizontal");
+					
+					if(element.hasClass("right"))
+						element.addClass("bounce").addClass("left").removeClass("right");
+					else
+						element.addClass("bounce").addClass("right");
+					
+			}
+			
         </script>
 </body>
 </html>

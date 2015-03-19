@@ -1,0 +1,83 @@
+﻿.ball-horizontal {
+margin: auto;
+width: 450px;
+        }
+
+        .ball {
+            border-radius: 30px;
+            height: 60px;
+            width: 60px;
+            background-color: #0073CF;
+            background-image: url(https://alertsenseadmin.blob.core.windows.net/alertsense-admin-region/alertsense_75x75.png);
+            background-size: 75%;
+            background-repeat: no-repeat;
+            background-position: center center;}
+
+        @-webkit-keyframes horizontal-right {
+            from {
+               -webkit-transform: rotate(0deg) translateX(0px);
+             
+            }
+
+            to {
+                -webkit-transform: translateX(400px);
+                
+            }
+        }
+		@-webkit-keyframes horizontal-left {
+            from {
+               -webkit-transform: translateX(400px);
+             
+            }
+
+            to {
+                -webkit-transform: translateX(0px);
+                
+            }
+        }
+        @-webkit-keyframes vertical {
+            from {
+				-webkit-transform: translateY(0px) rotate(0deg) ;
+				-webkit-animation-timing-function: ease-out;  
+            }
+
+            50% {
+                -webkit-transform: translateY(-100px);
+				-webkit-animation-timing-function: ease-in; 
+                
+            }
+
+            to {
+                -webkit-transform: translateY(0px) rotate(360deg) ;
+                
+            }
+        }
+		
+		@-webkit-keyframes rotate-ball {
+		from {
+				-webkit-transform:rotate(0deg) ;
+
+            }
+
+            to {
+                -webkit-transform:  rotate(720deg) ;
+                
+            }
+		}
+
+        .ball-horizontal.left {
+			-webkit-animation: horizontal-left 1s linear;
+			-webkit-animation-fill-mode: forwards;
+		}
+        .ball-horizontal.right {
+			-webkit-animation: horizontal-right 1s linear;
+			-webkit-animation-fill-mode: forwards;
+		}
+        .bounce .ball-vertical {
+            -webkit-animation: vertical 1s;
+
+        }		
+        .bounce .ball {
+            -webkit-animation: rotate-ball 1s linear;
+
+        }
