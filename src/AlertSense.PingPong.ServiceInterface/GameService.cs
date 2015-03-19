@@ -1,4 +1,4 @@
-﻿#define GameFactoryManager
+﻿//#define GameFactoryManager
 using AlertSense.PingPong.Common.Interfaces;
 using AlertSense.PingPong.Domain;
 using AlertSense.PingPong.ServiceModel;

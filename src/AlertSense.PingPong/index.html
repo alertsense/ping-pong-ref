@@ -21,6 +21,82 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style>
+        .ball-wrap {
+        }
+
+        .ball {
+            border-radius: 30px;
+            height: 60px;
+            width: 60px;
+            background-color: #0073CF;
+            background-image: url(https://alertsenseadmin.blob.core.windows.net/alertsense-admin-region/alertsense_75x75.png);
+            background-size: 75%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            /*transition: all 1s ease;*/
+            /*position: relative;*/
+            /*animation: bounce 1.2s ease-out;*/
+        }
+
+        @-webkit-keyframes horizontal {
+            from {
+               -webkit-transform: translateX(0px) rotate(0deg);
+               -webkit-animation-timing-function: ease-out;
+            }
+
+            50% {
+                -webkit-transform: translateX(150px, -100px) rotate(180deg);
+                -webkit-animation-timing-function: ease-out;
+            }
+
+            to {
+                -webkit-transform: translateX(300px) rotate(360deg);
+                -webkit-animation-timing-function: ease-out;
+            }
+        }
+        @-webkit-keyframes vertical {
+            from {
+               -webkit-transform: translateY(0px) rotate(0deg);
+               -webkit-animation-timing-function: ease-out;
+            }
+
+            50% {
+                -webkit-transform: translateY(-100px) rotate(180deg);
+                -webkit-animation-timing-function: ease-out;
+            }
+
+            to {
+                -webkit-transform: translateY(0px) rotate(360deg);
+                -webkit-animation-timing-function: ease-out;
+            }
+        }
+
+        .bounce {
+            /*-webkit-animation-name: bounce;
+            -webkit-animation-duration: 2s;
+            -webkit-animation-timing-function: ease-out;*/
+            -webkit-animation: horizontal 2s ease-out infinite;
+            
+            /*transform: rotate(360deg);*/
+            /*transform: translate(150px, 100px);*/
+
+        }
+        .bounce .ball {
+            /*-webkit-animation-name: bounce;
+            -webkit-animation-duration: 2s;
+            -webkit-animation-timing-function: ease-out;*/
+            
+            -webkit-animation: vertical 2s ease-in infinite;
+            /*transform: rotate(360deg);*/
+            /*transform: translate(150px, 100px);*/
+
+        }
+        /*.bounce, .bounce .ball {
+            margin-left: 400px;
+            transform: rotate(360deg);
+        }*/
+    </style>
 </head>
 
 <body>
@@ -33,76 +109,85 @@
                     <img src="Images/logo_422_120.png" alt="AlertSense Logo" />
                 </div>
             </div>
+            <div class="ball-wrap">
+                <div class="ball">
 
-            <div class="inner cover">
-                <div class="row">
-                    <div class="col-md-6 side1"><h2>Side One</h2></div>
-                    <div class="col-md-6 side2"><h2>Side Two</h2></div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6 side1 score"><span id="side-one-score"></span></div>
-                    <div class="col-md-6 side2 score"><span id="side-two-score"></span></div>
+                <div class="inner cover">
+                    <div class="row">
+                        <div class="col-md-6 side1"><h2>Side One</h2></div>
+                        <div class="col-md-6 side2"><h2>Side Two</h2></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 side1 score"><span id="side-one-score"></span></div>
+                        <div class="col-md-6 side2 score"><span id="side-two-score"></span></div>
+                    </div>
+
+                    <table class="table game-info-table">
+                        <colgroup>
+                            <col class="side-one-column" />
+                            <col class="time-column" />
+                            <col class="side-two-column" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Side One</th>
+                                <th>Time</th>
+                                <th>Side Two</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td>00:00.00</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <table class="table game-info-table">
-                    <colgroup>
-                        <col class="side-one-column" />
-                        <col class="time-column" />
-                        <col class="side-two-column" />
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>Side One</th>
-                            <th>Time</th>
-                            <th>Side Two</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td>00:00.00</td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="mastfoot">
+                    <div class="inner">
+                        <p>Current Game: <span id="game-state"></span> (<span id="game-id">No active game</span>)</p>
+
+                        <p>Template by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+                    </div>
+                </div>
+
             </div>
-
-            <div class="mastfoot">
-                <div class="inner">
-                    <p>Current Game: <span id="game-state"></span> (<span id="game-id">No active game</span>)</p>
-
-                    <p>Template by <a href="https://twitter.com/mdo">@mdo</a>.</p>
-                </div>
-            </div>
-
         </div>
-    </div>
-    <div id="win-modal" style="display: none" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Winner!</h4>
-                </div>
-                <div class="modal-body">
-                    <h2>Congratulations, Player <span id="win-side"></span></h2>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    <script src="Scripts/jquery.signalR-2.2.0.js"></script>
-    <script src="signalr/hubs"></script>
-    <script src="Scripts/SpectateManager.js"></script>
-    <script type="text/javascript">
-        window.spectateManager.init();
-    </script>
+        <div id="win-modal" style="display: none" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Winner!</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h2>Congratulations, Player <span id="win-side"></span></h2>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        <script src="Scripts/jquery.signalR-2.2.0.js"></script>
+        <script src="signalr/hubs"></script>
+        <script src="Scripts/SpectateManager.js"></script>
+        <script type="text/javascript">
+            window.spectateManager.init();
+            $().ready(function ()
+            {
+                $(".ball-wrap").click(function ()
+                {
+                    $(this).toggleClass("bounce");
+                });
+            });
+        </script>
 </body>
 </html>

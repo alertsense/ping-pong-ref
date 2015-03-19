@@ -75,7 +75,7 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
             Debug.WriteLine("Existing GameId: {0}", game.Id);
 
             GameModel gameState = game as GameModel;
-            gameState = BounceBall(gameState, 4);
+            gameState = BounceBall(gameState, 15);
 
             Assert.That(gameState.Players.Count, Is.EqualTo(2));
             Assert.That(gameState.Players[(int)newGame.InitialServer].Score, Is.EqualTo(1));
@@ -87,8 +87,11 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
         //[Ignore]
         public void GameBounceSequenceTest()
         {
-            if(localhost)
-                Client = new JsonServiceClient("http://localhost/api/");
+            if (localhost)
+            {
+                //Client = new JsonServiceClient("http://localhost/api/");
+                Client = new JsonServiceClient("http://localhost:60461/api/");
+            }
 
             var game = Client.Post(new CreateGameRequest { });
             Assert.That(game, Is.Not.Null);
@@ -166,7 +169,8 @@ namespace AlertSense.PingPong.ServiceInterface.IntegrationTests.IntegrationTests
                     gameState = Client.Post(new CreateBounceRequest { GameId = game.Id, Side = Side.None });
 
                 if (localhost)
-                    Thread.Sleep(bounceTime.Next(40, 100));
+                    //Thread.Sleep(bounceTime.Next(40, 100));
+                Thread.Sleep(bounceTime.Next(340, 450));
             }
 
             Debug.WriteLine("\tPlayer 1: {0} to Player 2: {1}", gameState.Players[0].Score, gameState.Players[1].Score);

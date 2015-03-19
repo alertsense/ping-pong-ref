@@ -30,6 +30,10 @@ namespace AlertSense.PingPong.Domain
         public GameModel CreateGame()
         {
             Game = GameFactory.Create();
+
+            if (GameRepository != null)
+                GameRepository.SaveGame(Game.ToGameEntity());
+
             return Game;
         }
 

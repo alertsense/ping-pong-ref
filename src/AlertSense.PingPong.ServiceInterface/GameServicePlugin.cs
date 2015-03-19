@@ -16,7 +16,7 @@ namespace AlertSense.PingPong.ServiceInterface
             var container = appHost.GetContainer();
 
             // register the in memory sql lite database connection factory if no other one has been registered
-            if (container.Resolve<IDbConnectionFactory>() == null)
+            if (container.TryResolve<IDbConnectionFactory>() == null)
                 container.Register<IDbConnectionFactory>(c => new OrmLiteConnectionFactory(":memory:", SqliteDialect.Provider));
 
             //container.Register<IDbConnectionFactory>(c => new OrmLiteConnectionFactory(@"C:\git\ping-pong-ref\src\AlertSense.PingPong.db", SqliteDialect.Provider));
