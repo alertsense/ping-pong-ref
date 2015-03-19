@@ -15,8 +15,8 @@
                 {
                    ButtonClickTime = 500,
                    PressAndHoldTime = 2000,
-                   ApiUri = "http://192.168.1.35/api/",
-                   RabbitMqHostName = "192.168.1.35"
+                   ApiUri = "http://pingpong.dev/api/",
+                   RabbitMqHostName = "pingpong.dev"
                 };
             }
         }

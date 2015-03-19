@@ -35,9 +35,7 @@ namespace AlertSense.PingPong.Raspberry
             DrawTable(table2);
             UpdateTable(table2);
 
-            Console.SetCursorPosition(0, 20);
-            Console.ResetColor();
-            //Console.Write(Resources.Instructions);
+            ResetCursor();
         }
 
         public void DrawTable(Table table)
@@ -55,6 +53,7 @@ namespace AlertSense.PingPong.Raspberry
             }
             Console.SetCursorPosition(coords.Left, coords.Top + coords.Height);
             Console.Write("╘" + new String('─', coords.Width - 2) + "╝");
+            ResetCursor();
         }
 
         public void UpdateTable(Table table)
@@ -79,14 +78,14 @@ namespace AlertSense.PingPong.Raspberry
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("[BNC-" + table.Settings.BouncePin + "]");
 
-            Console.SetCursorPosition(_outputCoords.Left, _outputCoords.Top);
+            ResetCursor();
         }
 
         public void UpdateGame(Game game)
         {
             Console.SetCursorPosition(0, 20);
             Console.Write("Game Id: {0}", game.Id.ToString("D"));
-            Console.SetCursorPosition(_outputCoords.Left, _outputCoords.Top);
+            ResetCursor();
         }
 
         private class Coordinates
@@ -101,14 +100,22 @@ namespace AlertSense.PingPong.Raspberry
         {
             Console.SetCursorPosition(0, 18);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(message.PadRight(80, ' '));
+            Console.WriteLine(message);
+            ResetCursor();
         }
 
         public void ShowMessage(string message)
         {
             Console.SetCursorPosition(0, 18);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(message.PadRight(80,' '));
+            Console.WriteLine(message);
+            ResetCursor();
+        }
+
+        public void ResetCursor()
+        {
+            Console.ResetColor();
+            Console.SetCursorPosition(_outputCoords.Left, _outputCoords.Top);
         }
     }
 }

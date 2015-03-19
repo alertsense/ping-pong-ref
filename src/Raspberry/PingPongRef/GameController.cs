@@ -10,6 +10,7 @@ using AlertSense.PingPong.Raspberry.Models;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
 using ServiceStack.Messaging;
+using ServiceStack.Text;
 
 namespace AlertSense.PingPong.Raspberry
 {
@@ -30,16 +31,20 @@ namespace AlertSense.PingPong.Raspberry
         public void Start()
         {
             Board.DrawInititalScreen(Table1, Table2);
-
-            Board.ShowMessage("Connecting to the bounce queue...");
-            ConnectToBounceQueue();
-            Board.ShowMessage("Requesting a new game from the server...");
-            _game = CreateGame();
-            Board.UpdateGame(_game);
             Board.ShowMessage("Connecting to Table1...");
             _table1 = OpenTableConnection(Table1);
             Board.ShowMessage("Connecting to Table2...");
             _table2 = OpenTableConnection(Table2);
+
+            Board.ShowMessage("Connecting to the bounce queue...");
+            ConnectToBounceQueue();
+
+            Board.ShowMessage("Requesting a new game from the server...");
+            _game = CreateGame();
+            Board.UpdateGame(_game);
+
+            UpdateTables();
+
             Board.ShowMessage("Ready!");
         }
 
@@ -48,19 +53,31 @@ namespace AlertSense.PingPong.Raspberry
             Game game = null;
             try
             {
-                var response = RestClient.Post(new AlertSense.PingPong.ServiceModel.CreateGameRequest());
+                var response = RestClient.Post(new CreateGameRequest());
+                Console.WriteLine(response.Dump());
                 game = new Game
                 {
                     Id = response.Id,
-                    CurrentServingTable = response.CurrentServer == ServiceModel.Enums.Side.One ? "Table1" : "Table2"
+                    CurrentServingTable = response.CurrentServer == Side.One ? "Table1" : "Table2"
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Board.ShowWarning("Failed to create a new game via the server.  Creating a new local game.");
+                Console.WriteLine(ex);
                 game = new Game { Id = Guid.NewGuid(), CurrentServingTable = "Table1" };
+                Table1.ServiceLight = true;
+                Table2.ServiceLight = false;
             }
             return game;
+        }
+
+        private void UpdateTables()
+        {
+            _table1.Update();
+            _table2.Update();
+            Board.UpdateTable(Table1);
+            Board.UpdateTable(Table2);
         }
 
         private ITableConnection OpenTableConnection(Table table)
@@ -99,9 +116,8 @@ namespace AlertSense.PingPong.Raspberry
                     {
                         Board.ShowWarning("Failed to add a point. " + ex.Message);
                     }
-                    
-                    _table1.Update();
-                    _table2.Update();
+
+                    UpdateTables();
                 }
                 else if (conn.Table.ButtonDuration > Settings.PressAndHoldTime)
                 {
@@ -121,8 +137,7 @@ namespace AlertSense.PingPong.Raspberry
                         Board.ShowWarning("Failed to remove last point. " + ex.Message);
                     }
 
-                    _table1.Update();
-                    _table2.Update();
+                    UpdateTables();
                 }
                 conn.Table.ButtonLastPressed = null;
             }
@@ -161,8 +176,7 @@ namespace AlertSense.PingPong.Raspberry
                 Table1.ServiceLight = response.CurrentServer == Side.One;
                 Table2.ServiceLight = response.CurrentServer == Side.Two;
 
-                _table1.Update();
-                _table2.Update();
+                UpdateTables();
             }
             catch (Exception ex)
             {
@@ -173,14 +187,19 @@ namespace AlertSense.PingPong.Raspberry
         private void SendBounce(Table table)
         {
             if (!IsBounceQueueOpen())
+            {
+                Board.ShowWarning("Failed to send BounceMessage.  Queue is not open.");
                 return;
+            }
+                
             try
             {
-                var payload = new BounceMessage()
+                var message = new BounceMessage()
                 {
-                    GameId = _game.Id, 
+                    GameId = _game.Id,
                     Side = table.Name == "Table1" ? Side.One : Side.Two
-                }.ToJson().ToUtf8Bytes();
+                };
+                var payload = message.ToJson().ToUtf8Bytes();
 
                 var props = _mqChannel.CreateBasicProperties();
                 props.SetPersistent(true);
@@ -190,6 +209,8 @@ namespace AlertSense.PingPong.Raspberry
                     routingKey: QueueNames<BounceMessage>.In, 
                     basicProperties: props, 
                     body: payload);
+
+                Console.WriteLine(message.Dump());
             }
             catch (Exception)
             {
@@ -207,12 +228,13 @@ namespace AlertSense.PingPong.Raspberry
                 return;
             var mqFactory = new ConnectionFactory { HostName = Settings.RabbitMqHostName };
             _mqConnection = mqFactory.CreateConnection();
-            _mqChannel = _mqConnection.CreateModel();       
+            _mqChannel = _mqConnection.CreateModel();   
+            
         }
 
         private bool IsBounceQueueOpen()
         {
-            return _mqChannel != null && !_mqChannel.IsOpen;
+            return _mqChannel != null && _mqChannel.IsOpen;
         }
 
         public void Dispose()
