@@ -82,6 +82,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AlertSense.PingPong.Common\AlertSense.PingPong.Common.csproj">
+      <Project>{a93fc2e3-31dc-4086-bfe2-57fd83fed9eb}</Project>
+      <Name>AlertSense.PingPong.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AlertSense.PingPong.Raspberry.Models\AlertSense.PingPong.Raspberry.Models.csproj">
       <Project>{4c7b2444-3a54-4735-bd18-c4812428adc7}</Project>
       <Name>AlertSense.PingPong.Raspberry.Models</Name>

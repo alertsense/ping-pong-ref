@@ -4,6 +4,8 @@ namespace AlertSense.PingPong.Raspberry.Models
 {
     public class TableSettings
     {
+        public const decimal BounceTimeoutDefault = 60000m;
+
         private IGpioConnectionDriver _driver;
 
         public IGpioConnectionDriver Driver
@@ -15,6 +17,7 @@ namespace AlertSense.PingPong.Raspberry.Models
         public ProcessorPin ButtonPin { get; set; }
         public ProcessorPin LedPin { get; set; }
         public ProcessorPin BouncePin { get; set; }
+        public decimal BounceTimeout { get; set; }
 
         public static TableSettings Table1 
         {
@@ -25,6 +28,7 @@ namespace AlertSense.PingPong.Raspberry.Models
                     ButtonPin = ProcessorPin.Pin17,
                     BouncePin = ProcessorPin.Pin6,
                     LedPin = ProcessorPin.Pin22,
+                    BounceTimeout = BounceTimeoutDefault
                 };
             }
         }
@@ -37,7 +41,8 @@ namespace AlertSense.PingPong.Raspberry.Models
                 {
                     ButtonPin = ProcessorPin.Pin18,
                     BouncePin = ProcessorPin.Pin12,
-                    LedPin = ProcessorPin.Pin23,                
+                    LedPin = ProcessorPin.Pin23,
+                    BounceTimeout = BounceTimeoutDefault
                 };
             }
         }

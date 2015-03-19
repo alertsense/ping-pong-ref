@@ -6,7 +6,7 @@ using AlertSense.PingPong.Raspberry.Models;
 
 namespace AlertSense.PingPong.Raspberry.IO
 {
-    public static class ConnectionFactory
+    public static class TableConnectionFactory
     {
         static readonly Dictionary<Type, Type> Connections = new Dictionary<Type, Type>();
         static readonly IGpioConnectionDriver Driver = GpioConnectionSettings.DefaultDriver;

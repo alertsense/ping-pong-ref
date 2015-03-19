@@ -9,7 +9,7 @@ namespace AlertSense.PingPong.Raspberry.IO
     public class TableConnection : ITableConnection
     {
         private GpioConnection _gpioConnection;
-        System.ComponentModel.BackgroundWorker _bounceWorker;
+        BackgroundWorker _bounceWorker;
 
         public event EventHandler<BounceEventArgs> Bounce;
         public event EventHandler<ButtonEventArgs> ButtonPressed;
@@ -22,25 +22,30 @@ namespace AlertSense.PingPong.Raspberry.IO
 
             var settings = Table.Settings;
             var buttonConfig = settings.ButtonPin.Input().Name(ButtonName).OnStatusChanged(Button_StatusChanged);
-            var bounceConfig = settings.BouncePin.Input().Name(BounceName).OnStatusChanged(Bounce_StatusChanged);
+            //var bounceConfig = settings.BouncePin.Input().Name(BounceName).OnStatusChanged(Bounce_StatusChanged);
             var ledConfig = settings.LedPin.Output().Name(LedName);
 
             _gpioConnection = new GpioConnection(new GpioConnectionSettings { Driver = settings.Driver, PollInterval = 0.01m});
             _gpioConnection.Add(buttonConfig);
             _gpioConnection.Add(ledConfig);
-            _gpioConnection.Add(bounceConfig);
+            //_gpioConnection.Add(bounceConfig);
             _gpioConnection.Open();
 
 
-            //_bounceWorker = new System.ComponentModel.BackgroundWorker
-            //{
-            //    WorkerSupportsCancellation = true,
-            //    WorkerReportsProgress = true
-            //};
-            //_bounceWorker.DoWork += bounceWorker_DoWork;
-            //_bounceWorker.ProgressChanged += bounceWorker_ProgressChanged;
-            //_bounceWorker.RunWorkerAsync();
+            Log("Open: BounceWorker Initializing...");
+            _bounceWorker = new BackgroundWorker
+            {
+                WorkerSupportsCancellation = true,
+                WorkerReportsProgress = true
+            };
+            _bounceWorker.DoWork += BounceWorker_DoWork;
+            _bounceWorker.ProgressChanged += BounceWorker_ProgressChanged;
+            _bounceWorker.RunWorkerCompleted += BounceWorkerOnRunWorkerCompleted;
+            _bounceWorker.RunWorkerAsync();
+            Log("Open: BounceWorker Ready.");
+            
         }
+
 
         void Button_StatusChanged(bool value)
         {
@@ -71,8 +76,10 @@ namespace AlertSense.PingPong.Raspberry.IO
         
         public void Close()
         {
-            //_bounceWorker.CancelAsync();
-            _gpioConnection.Close();
+            if (_bounceWorker != null)
+                _bounceWorker.CancelAsync();
+            if (_gpioConnection != null)
+                _gpioConnection.Close();
         }
 
         public void Dispose()
@@ -102,39 +109,67 @@ namespace AlertSense.PingPong.Raspberry.IO
             Led(Table.ServiceLight);
         }
 
-        void bounceWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+
+
+        private void BounceWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Console.WriteLine("Bounce");
+            var worker = sender as BackgroundWorker;
+            var bouncePin = Table.Settings.BouncePin;
+            var driver = GpioConnectionSettings.DefaultDriver;
+            Log("BounceWorker_DoWork: Allocating bounce pin " + bouncePin + " for input...");
+            driver.Allocate(bouncePin, PinDirection.Input);
+            Log("BounceWorker_DoWork: Bounce pin " + bouncePin + "  allocated.");
+            try
+            {
+                while (worker != null && !worker.CancellationPending)
+                {
+                    try
+                    {
+                        Log("Waiting for a bounce...");
+                        driver.Wait(bouncePin, true, Table.Settings.BounceTimeout);
+                        Log("Bounce detected.");
+                        worker.ReportProgress(0, new BounceEventArgs());
+                    }
+                    catch (TimeoutException)
+                    {
+                        Log("Timeout waiting for bounce");
+                        worker.ReportProgress(0, new BounceEventArgs(true));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Error: " + ex.Message);
+            }
+            finally
+            {
+                driver.Release(bouncePin);
+            }
+
+            if (worker != null && worker.CancellationPending)
+                e.Cancel = true;
+        }
+
+        private void BounceWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            Log("BounceWorker_ProgressChanged: Bounce");
             var args = e.UserState as BounceEventArgs;
             if (args != null)
                 OnBounce(args);
         }
 
-        void bounceWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {
-            var worker = sender as BackgroundWorker;
-            var pin = Table.Settings.BouncePin;
-            Table.Settings.Driver.Allocate(pin, PinDirection.Input);
-            Console.WriteLine("Allocating pin " + pin);
-            try
-            {
-                while (!worker.CancellationPending)
-                {
-                    if (Table.Settings.Driver.Read(pin))
-                        worker.ReportProgress(0, new BounceEventArgs());
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-            }
-            finally
-            {
-                Table.Settings.Driver.Release(pin);
-            }
 
-            if (worker.CancellationPending)
-                e.Cancel = true;;
+        private void BounceWorkerOnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null)
+                Log("Error: " + e.Error.Message);
+            if (e.Cancelled)
+                Log("Cancelled");
+        }
+
+        private void Log(string message)
+        {
+            //Console.WriteLine("{0}: {1}", Table.Name, message);
         }
     }
 }

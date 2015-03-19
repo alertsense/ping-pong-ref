@@ -16,7 +16,7 @@ namespace AlertSense.PingPong.Raspberry
         public GameBoard()
         {
             _coordinates = new Dictionary<string, Coordinates>();
-            _outputCoords = new Coordinates {Left = 0, Top = 22};
+            _outputCoords = new Coordinates {Left = 0, Top = 23};
         }
         
         public void DrawInititalScreen(Table table1, Table table2)
@@ -35,9 +35,9 @@ namespace AlertSense.PingPong.Raspberry
             DrawTable(table2);
             UpdateTable(table2);
 
-            Console.SetCursorPosition(0, 19);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(Resources.Instructions);
+            Console.SetCursorPosition(0, 20);
+            Console.ResetColor();
+            //Console.Write(Resources.Instructions);
         }
 
         public void DrawTable(Table table)
@@ -101,7 +101,14 @@ namespace AlertSense.PingPong.Raspberry
         {
             Console.SetCursorPosition(0, 18);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(message);
+            Console.Write(message.PadRight(80, ' '));
+        }
+
+        public void ShowMessage(string message)
+        {
+            Console.SetCursorPosition(0, 18);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(message.PadRight(80,' '));
         }
     }
 }

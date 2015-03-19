@@ -1,9 +1,5 @@
 ﻿using AlertSense.PingPong.Raspberry.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AlertSense.PingPong.Raspberry.IO
 {
@@ -21,7 +17,15 @@ namespace AlertSense.PingPong.Raspberry.IO
 
     public class BounceEventArgs : EventArgs
     {
-
+        public BounceEventArgs()
+        {
+        }
+        
+        public BounceEventArgs(bool timeout)
+        {
+            Timeout = timeout;
+        }
+        public bool Timeout { get; set; }
     }
 
     public class ButtonEventArgs : EventArgs
