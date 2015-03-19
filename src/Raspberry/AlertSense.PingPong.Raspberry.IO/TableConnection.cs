@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 using Raspberry.IO.GeneralPurpose;
 using AlertSense.PingPong.Raspberry.Models;
@@ -9,17 +10,23 @@ namespace AlertSense.PingPong.Raspberry.IO
     public class TableConnection : ITableConnection
     {
         private GpioConnection _gpioConnection;
-        BackgroundWorker _bounceWorker;
+        private BackgroundWorker _bounceWorker;
+        private Stopwatch _stopwatch;
 
         public event EventHandler<BounceEventArgs> Bounce;
         public event EventHandler<ButtonEventArgs> ButtonPressed;
         public Table Table { get; set; }
+        public int BounceCount { get; set; }
+
+        private long _elapsed;
+        private long _lastBounce;
 
         public void Open()
         {
             if (Table.Settings == null)
                 throw new Exception("Settings must not be null");
 
+            _stopwatch = Stopwatch.StartNew();
             var settings = Table.Settings;
             var buttonConfig = settings.ButtonPin.Input().Name(ButtonName).OnStatusChanged(Button_StatusChanged);
             //var bounceConfig = settings.BouncePin.Input().Name(BounceName).OnStatusChanged(Bounce_StatusChanged);
@@ -55,7 +62,7 @@ namespace AlertSense.PingPong.Raspberry.IO
         void Bounce_StatusChanged(bool value)
         {
             if (value)
-                OnBounce(new BounceEventArgs());
+                OnBounce(new BounceEventArgs(0, 0));
         }
 
         string ButtonName
@@ -111,6 +118,7 @@ namespace AlertSense.PingPong.Raspberry.IO
         }
 
 
+  
 
         private void BounceWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -128,8 +136,11 @@ namespace AlertSense.PingPong.Raspberry.IO
                     {
                         Log("Waiting for a bounce...");
                         driver.Wait(bouncePin, true, Table.Settings.BounceTimeout);
+                        BounceCount++;
+                        _elapsed = _stopwatch.ElapsedTicks - _lastBounce;
+                        _lastBounce = _stopwatch.ElapsedTicks;
                         Log("Bounce detected.");
-                        worker.ReportProgress(0, new BounceEventArgs());
+                        worker.ReportProgress(0, new BounceEventArgs(_elapsed, BounceCount));
                     }
                     catch (TimeoutException)
                     {

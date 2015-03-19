@@ -18,7 +18,7 @@ namespace AlertSense.PingPong.Raspberry.Models
         public double ButtonDuration { get; set; }
         public DateTime? ButtonLastPressed { get; set; }
 
-        public DateTime? LastBounce { get; set; }
+        public long LastBounce { get; set; }
 
         public string Message { get; set; }
     }

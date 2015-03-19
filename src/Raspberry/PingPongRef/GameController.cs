@@ -1,4 +1,6 @@
 ﻿using System.Configuration;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Channels;
 using AlertSense.PingPong.Common.Messages;
 using AlertSense.PingPong.Raspberry.IO;
@@ -54,12 +56,14 @@ namespace AlertSense.PingPong.Raspberry
             try
             {
                 var response = RestClient.Post(new CreateGameRequest());
-                Console.WriteLine(response.Dump());
+                //Console.WriteLine(response.Dump());
                 game = new Game
                 {
                     Id = response.Id,
                     CurrentServingTable = response.CurrentServer == Side.One ? "Table1" : "Table2"
                 };
+                Table1.ServiceLight = response.CurrentServer == Side.One;
+                Table2.ServiceLight = response.CurrentServer == Side.Two;
             }
             catch (Exception ex)
             {
@@ -151,18 +155,26 @@ namespace AlertSense.PingPong.Raspberry
 
         void Table_Bounce(object sender, BounceEventArgs e)
         {
-            var table = (ITableConnection)sender;
+            var conn = (ITableConnection)sender;
             if (!e.Timeout)
             {
-                Console.WriteLine("{0}_Bounce", table.Table.Name);
-                SendBounce(table.Table);
+                var sent = false;
+                if (e.Elapsed > 50000)
+                {                   
+                    SendBounce(conn.Table);
+                    sent = true;
+                }
+                Console.WriteLine("[{0}] Bounce [{1}] {2} {3}", conn.Table.Name, e.Count, e.Elapsed, sent ? "SENT" : "IGNORED");
             }
             else
             {
-                Console.WriteLine("{0}_Timeout", table.Table.Name);
-                SendMissingBounce(table.Table);
+                Console.WriteLine("{0}_Timeout", conn.Table.Name);
+                //SendMissingBounce(table.Table);
             }
         }
+
+        
+        
 
         private void SendMissingBounce(Table table)
         {
@@ -171,7 +183,7 @@ namespace AlertSense.PingPong.Raspberry
                 var response = RestClient.Post(new CreateBounceRequest()
                 {
                     GameId = _game.Id,
-                    Side = table.Name == "Table1" ? Side.One : Side.Two
+                    Side = Side.None
                 });
                 Table1.ServiceLight = response.CurrentServer == Side.One;
                 Table2.ServiceLight = response.CurrentServer == Side.Two;
@@ -209,8 +221,6 @@ namespace AlertSense.PingPong.Raspberry
                     routingKey: QueueNames<BounceMessage>.In, 
                     basicProperties: props, 
                     body: payload);
-
-                Console.WriteLine(message.Dump());
             }
             catch (Exception)
             {

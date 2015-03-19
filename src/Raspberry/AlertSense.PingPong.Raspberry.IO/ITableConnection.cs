@@ -17,8 +17,10 @@ namespace AlertSense.PingPong.Raspberry.IO
 
     public class BounceEventArgs : EventArgs
     {
-        public BounceEventArgs()
+        public BounceEventArgs(long elapsed, int count)
         {
+            Elapsed = elapsed;
+            Count = count;
         }
         
         public BounceEventArgs(bool timeout)
@@ -26,6 +28,8 @@ namespace AlertSense.PingPong.Raspberry.IO
             Timeout = timeout;
         }
         public bool Timeout { get; set; }
+        public long Elapsed { get; set; }
+        public int Count { get; set; }
     }
 
     public class ButtonEventArgs : EventArgs
