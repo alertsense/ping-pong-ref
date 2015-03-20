@@ -29,6 +29,7 @@ namespace AlertSense.PingPong.Data
             if (DbConnection != null && DbConnection.State != ConnectionState.Closed)
             {
                 DbConnection.Close();
+                DbConnection.Dispose();
             }
         }
 
