@@ -74,8 +74,6 @@ namespace AlertSense.PingPong.Data
             return DbConnection.Delete<Point>(point) > 0;
         }
 
-
-
         public bool DeleteGame(Game game)
         {
             throw new NotImplementedException();

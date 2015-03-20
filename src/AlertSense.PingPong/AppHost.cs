@@ -34,7 +34,7 @@ namespace AlertSense.PingPong
             container.Register<IDbConnectionFactory>(c => new OrmLiteConnectionFactory(ConfigurationManager.ConnectionStrings["PingPong"].ConnectionString, SqliteDialect.Provider));
 
             //Config examples
-            //this.Plugins.Add(new PostmanFeature());
+            this.Plugins.Add(new PostmanFeature());
             //this.Plugins.Add(new CorsFeature());
 
             // Configure RabbitMQ as our messaging service

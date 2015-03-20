@@ -112,6 +112,12 @@ namespace AlertSense.PingPong.Raspberry
             ResetCursor();
         }
 
+        public void Log(String message)
+        {
+            ResetCursor();
+            Console.WriteLine(message);
+        }
+
         public void ResetCursor()
         {
             Console.ResetColor();

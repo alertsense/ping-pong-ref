@@ -30,6 +30,8 @@ namespace AlertSense.PingPong.Raspberry
 
         private Game _game;
 
+        private RabbitMqWorker<CreateBounceResponse> _queueWorker;
+
         public void Start()
         {
             Board.DrawInititalScreen(Table1, Table2);
@@ -38,8 +40,14 @@ namespace AlertSense.PingPong.Raspberry
             Board.ShowMessage("Connecting to Table2...");
             _table2 = OpenTableConnection(Table2);
 
-            Board.ShowMessage("Connecting to the bounce queue...");
+            Board.ShowMessage("Connecting to the BounceMessage queue on " + Settings.RabbitMqHostName);
             ConnectToBounceQueue();
+
+            //Board.ShowMessage("Connecting to the BounceMessageReceived queue...");
+            //_queueWorker = new RabbitMqWorker<CreateBounceResponse>(Settings);
+            //_queueWorker.MessageReceived += _queueWorker_MessageReceived;
+            //_queueWorker.MessageError += _queueWorker_MessageError;
+            //_queueWorker.Start();
 
             Board.ShowMessage("Requesting a new game from the server...");
             _game = CreateGame();
@@ -48,6 +56,19 @@ namespace AlertSense.PingPong.Raspberry
             UpdateTables();
 
             Board.ShowMessage("Ready!");
+        }
+
+        void _queueWorker_MessageError(object sender, MessageErrorEventArgs e)
+        {
+            Board.Log("Queue Worker Error: "  + e.Exception.ToString());
+        }
+
+        void _queueWorker_MessageReceived(object sender, MessageReceivedEventArgs<CreateBounceResponse> e)
+        {
+            Board.Log("Message Received: " + e.Message.Dump());
+            Table1.ServiceLight = e.Message.CurrentServer == Side.One;
+            Table2.ServiceLight = e.Message.CurrentServer == Side.Two;
+            UpdateTables();
         }
 
         private Game CreateGame()
@@ -236,7 +257,7 @@ namespace AlertSense.PingPong.Raspberry
         {
             if (IsBounceQueueOpen())
                 return;
-            var mqFactory = new ConnectionFactory { HostName = Settings.RabbitMqHostName };
+            var mqFactory = new ConnectionFactory { HostName = Settings.RabbitMqHostName, UserName = Settings.RabbitMqUsername, Password= Settings.RabbitMqPassword };
             _mqConnection = mqFactory.CreateConnection();
             _mqChannel = _mqConnection.CreateModel();   
             
@@ -249,6 +270,8 @@ namespace AlertSense.PingPong.Raspberry
 
         public void Dispose()
         {
+            if (_queueWorker != null)
+                _queueWorker.Stop();
             if (_table1 != null)
                 _table1.Close();
             if (_table2 != null)
