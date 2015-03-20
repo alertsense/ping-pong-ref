@@ -53,8 +53,13 @@ namespace AlertSense.PingPong.Raspberry
             {
                 using (var channel = connection.CreateModel())
                 {
+                    var parameters = new Dictionary<string, object>
+                    {
+                        {"x-dead-letter-exchange", "mx.servicestack"},
+                        {"x-dead-letter-routing-key", QueueNames<T>.Dlq}
+                    };
                     var queueName = QueueNames<T>.In;
-                    channel.QueueDeclare(queueName, true, false, false, null);
+                    channel.QueueDeclare(queueName, true, false, false, parameters);
                     channel.BasicQos(0, 1, false);
 
                     var consumer = new QueueingBasicConsumer(channel);
@@ -62,10 +67,8 @@ namespace AlertSense.PingPong.Raspberry
 
                     while (true && !_worker.CancellationPending)
                     {
-                        var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
-
-                        var body = ea.Body;
-                        var message = Encoding.UTF8.GetString(body).FromJson<T>();
+                        var ea = consumer.Queue.Dequeue();
+                        var message = Encoding.UTF8.GetString(ea.Body).FromJson<T>();
 
                         _worker.ReportProgress(0, new MessageReceivedEventArgs<T>(message));
 

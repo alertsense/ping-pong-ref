@@ -108,7 +108,6 @@ namespace AlertSense.PingPong.Raspberry.IO
         
         public void Led(bool on)
         {
-            Console.WriteLine(LedName + ": " + on);
             _gpioConnection[LedName] = on;
         }
         

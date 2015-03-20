@@ -14,7 +14,7 @@ properties {
 
     $raspberryHost = "pingpong.pi"
     $raspberryUser = "pi"
-    $raspberryDirectory = "/home/pi/mono/pingpongref"
+    $raspberryDirectory = "/home/pi/mono/pingpong"
 
     $rabbitMqApiUrl = "http://localhost:15672/api"
     $rabbitMqVirtualHost = "pingpong"

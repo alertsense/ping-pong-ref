@@ -43,11 +43,11 @@ namespace AlertSense.PingPong.Raspberry
             Board.ShowMessage("Connecting to the BounceMessage queue on " + Settings.RabbitMqHostName);
             ConnectToBounceQueue();
 
-            //Board.ShowMessage("Connecting to the BounceMessageReceived queue...");
-            //_queueWorker = new RabbitMqWorker<CreateBounceResponse>(Settings);
-            //_queueWorker.MessageReceived += _queueWorker_MessageReceived;
-            //_queueWorker.MessageError += _queueWorker_MessageError;
-            //_queueWorker.Start();
+            Board.ShowMessage("Connecting to the BounceMessageReceived queue...");
+            _queueWorker = new RabbitMqWorker<CreateBounceResponse>(Settings);
+            _queueWorker.MessageReceived += _queueWorker_MessageReceived;
+            _queueWorker.MessageError += _queueWorker_MessageError;
+            _queueWorker.Start();
 
             Board.ShowMessage("Requesting a new game from the server...");
             _game = CreateGame();
@@ -65,7 +65,7 @@ namespace AlertSense.PingPong.Raspberry
 
         void _queueWorker_MessageReceived(object sender, MessageReceivedEventArgs<CreateBounceResponse> e)
         {
-            Board.Log("Message Received: " + e.Message.Dump());
+            Board.Log("CreateBounceResponse Received");
             Table1.ServiceLight = e.Message.CurrentServer == Side.One;
             Table2.ServiceLight = e.Message.CurrentServer == Side.Two;
             UpdateTables();
@@ -77,7 +77,6 @@ namespace AlertSense.PingPong.Raspberry
             try
             {
                 var response = RestClient.Post(new CreateGameRequest());
-                //Console.WriteLine(response.Dump());
                 game = new Game
                 {
                     Id = response.Id,
@@ -89,7 +88,7 @@ namespace AlertSense.PingPong.Raspberry
             catch (Exception ex)
             {
                 Board.ShowWarning("Failed to create a new game via the server.  Creating a new local game.");
-                Console.WriteLine(ex);
+                Board.Log(ex.ToString());
                 game = new Game { Id = Guid.NewGuid(), CurrentServingTable = "Table1" };
                 Table1.ServiceLight = true;
                 Table2.ServiceLight = false;
@@ -185,11 +184,11 @@ namespace AlertSense.PingPong.Raspberry
                     SendBounce(conn.Table);
                     sent = true;
                 }
-                Console.WriteLine("[{0}] Bounce [{1}] {2} {3}", conn.Table.Name, e.Count, e.Elapsed, sent ? "SENT" : "IGNORED");
+                Board.Log(String.Format("[{0}] Bounce [{1}] {2} {3}", conn.Table.Name, e.Count, e.Elapsed, sent ? "SENT" : "IGNORED"));
             }
             else
             {
-                Console.WriteLine("{0}_Timeout", conn.Table.Name);
+                Board.Log(String.Format("{0}_Timeout", conn.Table.Name));
                 //SendMissingBounce(table.Table);
             }
         }
@@ -257,7 +256,8 @@ namespace AlertSense.PingPong.Raspberry
         {
             if (IsBounceQueueOpen())
                 return;
-            var mqFactory = new ConnectionFactory { HostName = Settings.RabbitMqHostName, UserName = Settings.RabbitMqUsername, Password= Settings.RabbitMqPassword };
+            //var mqFactory = new ConnectionFactory { HostName = Settings.RabbitMqHostName, UserName = Settings.RabbitMqUsername, Password= Settings.RabbitMqPassword };
+            var mqFactory = new ConnectionFactory { HostName = Settings.RabbitMqHostName };
             _mqConnection = mqFactory.CreateConnection();
             _mqChannel = _mqConnection.CreateModel();   
             

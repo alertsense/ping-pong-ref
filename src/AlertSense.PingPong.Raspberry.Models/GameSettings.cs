@@ -20,7 +20,7 @@
                    PressAndHoldTime = 2000,
                    IgnoreBounceTime = 50000,
                    ApiUri = "http://pingpong.dev/api/",
-                   RabbitMqHostName = "amqp://pingpong.dev:5672/",
+                   RabbitMqHostName = "pingpong.dev",
                    RabbitMqUsername = "guest",
                    RabbitMqPassword = "guest"
                 };

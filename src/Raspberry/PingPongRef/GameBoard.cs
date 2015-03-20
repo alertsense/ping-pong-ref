@@ -100,7 +100,7 @@ namespace AlertSense.PingPong.Raspberry
         {
             Console.SetCursorPosition(0, 18);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message);
+            Console.WriteLine(message.PadRight(80, ' '));
             ResetCursor();
         }
 
@@ -108,7 +108,7 @@ namespace AlertSense.PingPong.Raspberry
         {
             Console.SetCursorPosition(0, 18);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(message);
+            Console.WriteLine(message.PadRight(80, ' '));
             ResetCursor();
         }
 

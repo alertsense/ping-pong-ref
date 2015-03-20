@@ -1,10 +1,5 @@
 ﻿using AlertSense.PingPong.Raspberry.Models;
 using ServiceStack;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AlertSense.PingPong.Raspberry
 {
@@ -12,6 +7,11 @@ namespace AlertSense.PingPong.Raspberry
     {
         public static GameController CreateGame()
         {
+            var restClient = new JsonServiceClient(GameSettings.Default.ApiUri)
+            {
+                Proxy = null, 
+                DisableAutoCompression = true
+            };
             var table1 = new Table
                 {
                     Name = "Table1",
@@ -30,7 +30,7 @@ namespace AlertSense.PingPong.Raspberry
                 Settings = GameSettings.Default,
                 Table1 = table1,
                 Table2 = table2,
-                RestClient = new JsonServiceClient(GameSettings.Default.ApiUri)
+                RestClient = restClient
             };
         }
     }
