@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace AlertSense.PingPong.Data
 {
-    public class GameRepository : IGameRepository
+    public class GameRepository : IGameRepository, IDisposable
     {
         public IDbConnectionFactory ConnectionFactory { get; set; }
 
@@ -22,6 +22,14 @@ namespace AlertSense.PingPong.Data
         {
             get { return _db ?? (_db = ConnectionFactory.OpenDbConnection()); }
             set { _db = value; }
+        }
+        
+        public void Dispose()
+        {
+            if (DbConnection != null && DbConnection.State != ConnectionState.Closed)
+            {
+                DbConnection.Close();
+            }
         }
 
         public List<Game> GetAllGames()
@@ -86,6 +94,7 @@ namespace AlertSense.PingPong.Data
         {
             throw new NotImplementedException();
         }
+
 
     }
 }
