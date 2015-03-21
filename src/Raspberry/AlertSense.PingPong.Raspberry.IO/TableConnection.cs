@@ -107,9 +107,7 @@ namespace AlertSense.PingPong.Raspberry.IO
         {
             Led(Table.ServiceLight);
         }
-
-
-  
+         
 
         private void BounceWorker_DoWork(object sender, DoWorkEventArgs e)
         {

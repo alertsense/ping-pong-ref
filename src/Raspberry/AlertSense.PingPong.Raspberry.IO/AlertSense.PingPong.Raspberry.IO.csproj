@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="TableConnectionFactory.cs" />
     <Compile Include="ITableConnection.cs" />
-    <Compile Include="TableConnectionRaw.cs" />
     <Compile Include="TableConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

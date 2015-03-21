@@ -112,44 +112,10 @@ namespace AlertSense.PingPong.Raspberry
                 conn.Table.ButtonDuration = DateTime.Now.Subtract(conn.Table.ButtonLastPressed.Value).TotalMilliseconds;
 
                 if (conn.Table.ButtonDuration < Settings.ButtonClickTime)
-                {
-                    conn.Table.Message = "Button pressed once";
-                    Board.LogDebug("Single Button Press: " + conn.Table.Name);
-                    try
-                    {
-                        var response = RestClient.Post(new CreatePointRequest
-                          {
-                              GameId = Game.Id,
-                              ScoringSide = conn.Table.Name == "Table1" ? Side.One : Side.Two
-                          });
-
-                        UpdateTables((GameModel)response);
-                    }
-                    catch (Exception ex)
-                    {
-                        Board.LogError("Failed to add a point. " + ex.Message);
-                    }
-
-                    
-                }
+                    HandleButtonPress(conn);
                 else if (conn.Table.ButtonDuration > Settings.PressAndHoldTime)
-                {
-                    conn.Table.Message = "Button held down.";
-                    Board.LogDebug("Long Button Press: " + conn.Table.Name);
-                    try
-                    {
+                    HandleLongButtonPress(conn);
 
-                        var response = RestClient.Delete(new RemoveLastPointRequest()
-                        {
-                            GameId = Game.Id
-                        });
-                        UpdateTables((GameModel)response);
-                    }
-                    catch (Exception ex)
-                    {
-                        Board.LogError("Failed to remove last point. " + ex.Message);
-                    }
-                }
                 conn.Table.ButtonLastPressed = null;
             }
             else
@@ -158,6 +124,45 @@ namespace AlertSense.PingPong.Raspberry
             }
             
             Board.UpdateTable(conn.Table);
+        }
+
+        private void HandleLongButtonPress(ITableConnection conn)
+        {
+            conn.Table.Message = "Button held down.";
+            Board.LogDebug("Long Button Press: " + conn.Table.Name);
+            try
+            {
+
+                var response = RestClient.Delete(new RemoveLastPointRequest()
+                {
+                    GameId = Game.Id
+                });
+                UpdateTables((GameModel)response);
+            }
+            catch (Exception ex)
+            {
+                Board.LogError("Failed to remove last point. " + ex.Message);
+            }
+        }
+
+        private void HandleButtonPress(ITableConnection conn)
+        {
+            conn.Table.Message = "Button pressed once";
+            Board.LogDebug("Single Button Press: " + conn.Table.Name);
+            try
+            {
+                var response = RestClient.Post(new CreatePointRequest
+                {
+                    GameId = Game.Id,
+                    ScoringSide = conn.Table.Name == "Table1" ? Side.One : Side.Two
+                });
+
+                UpdateTables((GameModel)response);
+            }
+            catch (Exception ex)
+            {
+                Board.LogError("Failed to add a point. " + ex.Message);
+            }
         }
 
         void Table_Bounce(object sender, BounceEventArgs e)
@@ -239,7 +244,12 @@ namespace AlertSense.PingPong.Raspberry
             if (IsBounceQueueOpen())
                 return;
 
-            var mqFactory = new ConnectionFactory { HostName = Settings.RabbitMqHostName, UserName = Settings.RabbitMqUsername, Password = Settings.RabbitMqPassword };
+            var mqFactory = new ConnectionFactory 
+            { 
+                HostName = Settings.RabbitMqHostName, 
+                UserName = Settings.RabbitMqUsername, 
+                Password = Settings.RabbitMqPassword 
+            };
             _mqConnection = mqFactory.CreateConnection();
             _mqChannel = _mqConnection.CreateModel();   
             
