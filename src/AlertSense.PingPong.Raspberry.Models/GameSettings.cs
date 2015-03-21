@@ -18,7 +18,7 @@
                 {
                    ButtonClickTime = 500,
                    PressAndHoldTime = 2000,
-                   IgnoreBounceTime = 50000,
+                   IgnoreBounceTime = 70000,
                    ApiUri = "http://pingpong.dev/api/",
                    RabbitMqHostName = "pingpong.dev",
                    RabbitMqUsername = "guest",

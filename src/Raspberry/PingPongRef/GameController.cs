@@ -174,7 +174,7 @@ namespace AlertSense.PingPong.Raspberry
             if (!e.Timeout)
             {
                 var sent = false;
-                if (e.Elapsed > 50000)
+                if (e.Elapsed > Settings.IgnoreBounceTime)
                 {                   
                     SendBounce(conn.Table);
                     sent = true;
