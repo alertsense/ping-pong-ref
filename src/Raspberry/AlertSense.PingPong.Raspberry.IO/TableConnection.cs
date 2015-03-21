@@ -29,13 +29,11 @@ namespace AlertSense.PingPong.Raspberry.IO
             _stopwatch = Stopwatch.StartNew();
             var settings = Table.Settings;
             var buttonConfig = settings.ButtonPin.Input().Name(ButtonName).OnStatusChanged(Button_StatusChanged);
-            //var bounceConfig = settings.BouncePin.Input().Name(BounceName).OnStatusChanged(Bounce_StatusChanged);
             var ledConfig = settings.LedPin.Output().Name(LedName);
 
             _gpioConnection = new GpioConnection(new GpioConnectionSettings { Driver = settings.Driver, PollInterval = 0.01m});
             _gpioConnection.Add(buttonConfig);
             _gpioConnection.Add(ledConfig);
-            //_gpioConnection.Add(bounceConfig);
             _gpioConnection.Open();
 
 
@@ -69,12 +67,6 @@ namespace AlertSense.PingPong.Raspberry.IO
         {
             get { return Table.Name + "_Button"; }
         }
-
-        string BounceName
-        {
-            get { return Table.Name + "_Bounce"; }
-        }
-        
 
         string LedName
         {
@@ -180,7 +172,7 @@ namespace AlertSense.PingPong.Raspberry.IO
 
         private void Log(string message)
         {
-            Console.WriteLine("{0}: {1}", Table.Name, message);
+            //Console.WriteLine("{0}: {1}", Table.Name, message);
         }
     }
 }

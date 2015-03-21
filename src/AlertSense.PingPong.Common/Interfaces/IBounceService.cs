@@ -1,9 +1,10 @@
 ﻿using AlertSense.PingPong.Common.Messages;
+using AlertSense.PingPong.ServiceModel;
 
 namespace AlertSense.PingPong.Common.Interfaces
 {
     public interface IBounceService
     {
-        void Post(BounceMessage message);
+        CreateBounceResponse Post(BounceMessage message);
     }
 }

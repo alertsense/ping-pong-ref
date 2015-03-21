@@ -12,14 +12,14 @@ namespace AlertSense.PingPong.ServiceInterface
     {
         public IGameManager GameManager { get; set; }
 
-        public void Post(BounceMessage message)
+        public CreateBounceResponse Post(BounceMessage message)
         {
             var createBounceRequest = new CreateBounceRequest
             {
                 GameId = message.GameId,
                 Side = message.Side
             };
-            HostContext.ServiceController.Execute(createBounceRequest, Request);
+            return (CreateBounceResponse) HostContext.ServiceController.Execute(createBounceRequest, Request);
         }
     }
 }

@@ -175,7 +175,7 @@ namespace AlertSense.PingPong.Raspberry
             {
                 var sent = false;
                 if (e.Elapsed > Settings.IgnoreBounceTime)
-                {                   
+                {      
                     SendBounce(conn.Table);
                     sent = true;
                 }
@@ -252,7 +252,7 @@ namespace AlertSense.PingPong.Raspberry
             if (IsBounceQueueOpen())
                 return;
 
-            var mqFactory = new ConnectionFactory { HostName = Settings.RabbitMqHostName };
+            var mqFactory = new ConnectionFactory { HostName = Settings.RabbitMqHostName, UserName = Settings.RabbitMqUsername, Password = Settings.RabbitMqPassword };
             _mqConnection = mqFactory.CreateConnection();
             _mqChannel = _mqConnection.CreateModel();   
             

@@ -50,7 +50,7 @@ namespace AlertSense.PingPong.Raspberry
                 {
                     var parameters = new Dictionary<string, object>
                     {
-                        {"x-dead-letter-exchange", "mx.servicestack"},
+                        {"x-dead-letter-exchange", "mx.servicestack.dlq"},
                         {"x-dead-letter-routing-key", QueueNames<T>.Dlq}
                     };
                     var queueName = QueueNames<T>.In;

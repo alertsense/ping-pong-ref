@@ -21,8 +21,8 @@
                    IgnoreBounceTime = 70000,
                    ApiUri = "http://pingpong.dev/api/",
                    RabbitMqHostName = "pingpong.dev",
-                   RabbitMqUsername = "guest",
-                   RabbitMqPassword = "guest"
+                   RabbitMqUsername = "pi",
+                   RabbitMqPassword = "raspberry"
                 };
             }
         }
