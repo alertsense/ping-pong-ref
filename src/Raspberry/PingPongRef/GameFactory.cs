@@ -12,6 +12,7 @@ namespace AlertSense.PingPong.Raspberry
                 Proxy = null, 
                 DisableAutoCompression = true
             };
+            var game = new Game();
             var table1 = new Table
                 {
                     Name = "Table1",
@@ -28,6 +29,7 @@ namespace AlertSense.PingPong.Raspberry
             {
                 Board = new GameBoard(),
                 Settings = GameSettings.Default,
+                Game = game,
                 Table1 = table1,
                 Table2 = table2,
                 RestClient = restClient

@@ -1,12 +1,13 @@
 ﻿using AlertSense.PingPong.Common.Messages;
 using AlertSense.PingPong.Raspberry.IO;
-using System;
+using AlertSense.PingPong.Raspberry.Models;
 using AlertSense.PingPong.ServiceModel;
 using AlertSense.PingPong.ServiceModel.Enums;
-using ServiceStack;
-using AlertSense.PingPong.Raspberry.Models;
+using AlertSense.PingPong.ServiceModel.Models;
 using RabbitMQ.Client;
+using ServiceStack;
 using ServiceStack.Messaging;
+using System;
 
 namespace AlertSense.PingPong.Raspberry
 {
@@ -18,82 +19,76 @@ namespace AlertSense.PingPong.Raspberry
         public GameSettings Settings { get; set; }
         public GameBoard Board { get; set; }
         public IRestClient RestClient { get; set; }
+        public Game Game { get; set; }
 
         private ITableConnection _table1;
         private ITableConnection _table2;
-
-        private Game _game;
 
         private RabbitMqWorker<CreateBounceResponse> _queueWorker;
 
         public void Start()
         {
             Board.DrawInititalScreen(Table1, Table2);
-            Board.LogDebug("Connecting to Table1...");
+
+            Board.LogDebug("Connecting to table components...");
             _table1 = OpenTableConnection(Table1);
-            Board.LogDebug("Connecting to Table2...");
             _table2 = OpenTableConnection(Table2);
 
-            Board.LogDebug("Connecting to the BounceMessage queue on " + Settings.RabbitMqHostName);
+            Board.LogDebug("Connecting to the mq:BounceMessage.inq...");
             ConnectToBounceQueue();
 
-            Board.LogDebug("Connecting to the BounceMessageReceived queue...");
+            Board.LogDebug("Subscribing to the mq:CreateBounceResponse.inq...");
             _queueWorker = new RabbitMqWorker<CreateBounceResponse>(Settings);
-            _queueWorker.MessageReceived += _queueWorker_MessageReceived;
-            _queueWorker.MessageError += _queueWorker_MessageError;
+            _queueWorker.MessageReceived += MessageReceived;
+            _queueWorker.MessageError += MessageError;
             _queueWorker.Start();
 
             Board.LogDebug("Requesting a new game from the server...");
-            _game = CreateGame();
-            Board.UpdateGame(_game);
+            var gameModel = CreateGame();
+            Game.Id = gameModel.Id;
 
-            UpdateTables();
+            Board.LogDebug("Updating table components...");
+            UpdateTables(gameModel);
+            Board.UpdateGame(Game);
 
             Board.LogInfo("Ready!");
         }
 
-        void _queueWorker_MessageError(object sender, MessageErrorEventArgs e)
+        void MessageError(object sender, MessageErrorEventArgs e)
         {
             Board.LogDebug("Queue Worker Error: "  + e.Exception.ToString());
         }
 
-        void _queueWorker_MessageReceived(object sender, MessageReceivedEventArgs<CreateBounceResponse> e)
+        void MessageReceived(object sender, MessageReceivedEventArgs<CreateBounceResponse> e)
         {
             Board.LogDebug("CreateBounceResponse Received");
-            Table1.ServiceLight = e.Message.CurrentServer == Side.One;
-            Table2.ServiceLight = e.Message.CurrentServer == Side.Two;
-            UpdateTables();
+            UpdateTables((GameModel)e.Message);
         }
 
-        private Game CreateGame()
+        private GameModel CreateGame()
         {
-            Game game = null;
             try
             {
-                var response = RestClient.Post(new CreateGameRequest());
-                game = new Game
-                {
-                    Id = response.Id,
-                    CurrentServingTable = response.CurrentServer == Side.One ? "Table1" : "Table2"
-                };
-                Table1.ServiceLight = response.CurrentServer == Side.One;
-                Table2.ServiceLight = response.CurrentServer == Side.Two;
+                return (GameModel) RestClient.Post(new CreateGameRequest());
             }
             catch (Exception ex)
             {
-                Board.LogError("Failed to create a new game via the server.  Creating a new local game.");
+                Board.LogError("Failed to create a new game via the server.");
                 Board.LogDebug(ex.ToString());
-                game = new Game { Id = Guid.NewGuid(), CurrentServingTable = "Table1" };
-                Table1.ServiceLight = true;
-                Table2.ServiceLight = false;
+                throw;
             }
-            return game;
         }
 
-        private void UpdateTables()
+        private void UpdateTables(GameModel model)
         {
+            Table1.ServiceLight = model.CurrentServer == Side.One;
+            Table2.ServiceLight = model.CurrentServer == Side.Two;
+
+            // Update table components
             _table1.Update();
             _table2.Update();
+
+            // Update the console
             Board.UpdateTable(Table1);
             Board.UpdateTable(Table2);
         }
@@ -124,18 +119,18 @@ namespace AlertSense.PingPong.Raspberry
                     {
                         var response = RestClient.Post(new CreatePointRequest
                           {
-                              GameId = _game.Id,
+                              GameId = Game.Id,
                               ScoringSide = conn.Table.Name == "Table1" ? Side.One : Side.Two
                           });
-                        Table1.ServiceLight = response.CurrentServer == Side.One;
-                        Table2.ServiceLight = response.CurrentServer == Side.Two;
+
+                        UpdateTables((GameModel)response);
                     }
                     catch (Exception ex)
                     {
                         Board.LogError("Failed to add a point. " + ex.Message);
                     }
 
-                    UpdateTables();
+                    
                 }
                 else if (conn.Table.ButtonDuration > Settings.PressAndHoldTime)
                 {
@@ -146,17 +141,14 @@ namespace AlertSense.PingPong.Raspberry
 
                         var response = RestClient.Delete(new RemoveLastPointRequest()
                         {
-                            GameId = _game.Id
+                            GameId = Game.Id
                         });
-                        Table1.ServiceLight = response.CurrentServer == Side.One;
-                        Table2.ServiceLight = response.CurrentServer == Side.Two;
+                        UpdateTables((GameModel)response);
                     }
                     catch (Exception ex)
                     {
                         Board.LogError("Failed to remove last point. " + ex.Message);
                     }
-
-                    UpdateTables();
                 }
                 conn.Table.ButtonLastPressed = null;
             }
@@ -184,12 +176,9 @@ namespace AlertSense.PingPong.Raspberry
             else
             {
                // Board.LogDebug(String.Format("{0}_Timeout", conn.Table.Name));
-                //SendMissingBounce(table.Table);
+               // SendMissingBounce(table.Table);
             }
         }
-
-        
-        
 
         private void SendMissingBounce(Table table)
         {
@@ -197,13 +186,11 @@ namespace AlertSense.PingPong.Raspberry
             {
                 var response = RestClient.Post(new CreateBounceRequest()
                 {
-                    GameId = _game.Id,
+                    GameId = Game.Id,
                     Side = Side.None
                 });
-                Table1.ServiceLight = response.CurrentServer == Side.One;
-                Table2.ServiceLight = response.CurrentServer == Side.Two;
 
-                UpdateTables();
+                UpdateTables((GameModel) response);
             }
             catch (Exception ex)
             {
@@ -223,7 +210,7 @@ namespace AlertSense.PingPong.Raspberry
             {
                 var message = new BounceMessage()
                 {
-                    GameId = _game.Id,
+                    GameId = Game.Id,
                     Side = table.Name == "Table1" ? Side.One : Side.Two
                 };
                 var payload = message.ToJson().ToUtf8Bytes();

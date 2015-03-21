@@ -51,7 +51,6 @@
     <Compile Include="Game.cs" />
     <Compile Include="GameSettings.cs" />
     <Compile Include="Interfaces\IGameBoard.cs" />
-    <Compile Include="LedState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TableSettings.cs" />

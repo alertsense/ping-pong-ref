@@ -9,6 +9,7 @@ namespace AlertSense.PingPong.Raspberry.Models
     public class Game
     {
         public Guid Id { get; set; }
-        public string  CurrentServingTable { get; set; }
+        public Table Table1 { get; set; }
+        public Table Table2 { get; set; }
     }
 }
