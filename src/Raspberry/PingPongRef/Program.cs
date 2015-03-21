@@ -14,7 +14,6 @@ namespace AlertSense.PingPong.Raspberry
             {
                 game.Start();
 
-                Console.WriteLine(Resources.Instructions);
                 Console.ReadLine();
             }
         }

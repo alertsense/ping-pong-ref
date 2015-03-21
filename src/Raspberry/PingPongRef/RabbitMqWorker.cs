@@ -1,16 +1,11 @@
 ﻿using AlertSense.PingPong.Raspberry.Models;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using ServiceStack.Text;
 using ServiceStack;
 using ServiceStack.Messaging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace AlertSense.PingPong.Raspberry
 {

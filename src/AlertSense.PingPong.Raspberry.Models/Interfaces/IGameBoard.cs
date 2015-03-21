@@ -11,6 +11,6 @@ namespace AlertSense.PingPong.Raspberry.Models.Interfaces
         void DrawInititalScreen(Table table1, Table table2);
         void DrawTable(Table table);
         void UpdateTable(Table table);
-        void ShowWarning(string message);
+        void LogError(string message);
     }
 }

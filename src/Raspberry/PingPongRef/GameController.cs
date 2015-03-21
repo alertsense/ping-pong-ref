@@ -1,8 +1,4 @@
-﻿using System.Configuration;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Channels;
-using AlertSense.PingPong.Common.Messages;
+﻿using AlertSense.PingPong.Common.Messages;
 using AlertSense.PingPong.Raspberry.IO;
 using System;
 using AlertSense.PingPong.ServiceModel;
@@ -10,9 +6,7 @@ using AlertSense.PingPong.ServiceModel.Enums;
 using ServiceStack;
 using AlertSense.PingPong.Raspberry.Models;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Exceptions;
 using ServiceStack.Messaging;
-using ServiceStack.Text;
 
 namespace AlertSense.PingPong.Raspberry
 {
@@ -35,37 +29,37 @@ namespace AlertSense.PingPong.Raspberry
         public void Start()
         {
             Board.DrawInititalScreen(Table1, Table2);
-            Board.ShowMessage("Connecting to Table1...");
+            Board.LogDebug("Connecting to Table1...");
             _table1 = OpenTableConnection(Table1);
-            Board.ShowMessage("Connecting to Table2...");
+            Board.LogDebug("Connecting to Table2...");
             _table2 = OpenTableConnection(Table2);
 
-            Board.ShowMessage("Connecting to the BounceMessage queue on " + Settings.RabbitMqHostName);
+            Board.LogDebug("Connecting to the BounceMessage queue on " + Settings.RabbitMqHostName);
             ConnectToBounceQueue();
 
-            Board.ShowMessage("Connecting to the BounceMessageReceived queue...");
+            Board.LogDebug("Connecting to the BounceMessageReceived queue...");
             _queueWorker = new RabbitMqWorker<CreateBounceResponse>(Settings);
             _queueWorker.MessageReceived += _queueWorker_MessageReceived;
             _queueWorker.MessageError += _queueWorker_MessageError;
             _queueWorker.Start();
 
-            Board.ShowMessage("Requesting a new game from the server...");
+            Board.LogDebug("Requesting a new game from the server...");
             _game = CreateGame();
             Board.UpdateGame(_game);
 
             UpdateTables();
 
-            Board.ShowMessage("Ready!");
+            Board.LogInfo("Ready!");
         }
 
         void _queueWorker_MessageError(object sender, MessageErrorEventArgs e)
         {
-            Board.Log("Queue Worker Error: "  + e.Exception.ToString());
+            Board.LogDebug("Queue Worker Error: "  + e.Exception.ToString());
         }
 
         void _queueWorker_MessageReceived(object sender, MessageReceivedEventArgs<CreateBounceResponse> e)
         {
-            Board.Log("CreateBounceResponse Received");
+            Board.LogDebug("CreateBounceResponse Received");
             Table1.ServiceLight = e.Message.CurrentServer == Side.One;
             Table2.ServiceLight = e.Message.CurrentServer == Side.Two;
             UpdateTables();
@@ -87,8 +81,8 @@ namespace AlertSense.PingPong.Raspberry
             }
             catch (Exception ex)
             {
-                Board.ShowWarning("Failed to create a new game via the server.  Creating a new local game.");
-                Board.Log(ex.ToString());
+                Board.LogError("Failed to create a new game via the server.  Creating a new local game.");
+                Board.LogDebug(ex.ToString());
                 game = new Game { Id = Guid.NewGuid(), CurrentServingTable = "Table1" };
                 Table1.ServiceLight = true;
                 Table2.ServiceLight = false;
@@ -125,20 +119,20 @@ namespace AlertSense.PingPong.Raspberry
                 if (conn.Table.ButtonDuration < Settings.ButtonClickTime)
                 {
                     conn.Table.Message = "Button pressed once";
-
+                    Board.LogDebug("Single Button Press: " + conn.Table.Name);
                     try
                     {
-                        var response = RestClient.Post(new AlertSense.PingPong.ServiceModel.CreatePointRequest
+                        var response = RestClient.Post(new CreatePointRequest
                           {
                               GameId = _game.Id,
-                              ScoringSide = conn.Table.Name == "Table1" ? ServiceModel.Enums.Side.One : ServiceModel.Enums.Side.Two
+                              ScoringSide = conn.Table.Name == "Table1" ? Side.One : Side.Two
                           });
-                        Table1.ServiceLight = response.CurrentServer == ServiceModel.Enums.Side.One;
-                        Table2.ServiceLight = response.CurrentServer == ServiceModel.Enums.Side.Two;
+                        Table1.ServiceLight = response.CurrentServer == Side.One;
+                        Table2.ServiceLight = response.CurrentServer == Side.Two;
                     }
                     catch (Exception ex)
                     {
-                        Board.ShowWarning("Failed to add a point. " + ex.Message);
+                        Board.LogError("Failed to add a point. " + ex.Message);
                     }
 
                     UpdateTables();
@@ -146,19 +140,20 @@ namespace AlertSense.PingPong.Raspberry
                 else if (conn.Table.ButtonDuration > Settings.PressAndHoldTime)
                 {
                     conn.Table.Message = "Button held down.";
+                    Board.LogDebug("Long Button Press: " + conn.Table.Name);
                     try
                     {
 
-                        var response = RestClient.Post(new AlertSense.PingPong.ServiceModel.RemoveLastPointRequest()
+                        var response = RestClient.Delete(new RemoveLastPointRequest()
                         {
                             GameId = _game.Id
                         });
-                        Table1.ServiceLight = response.CurrentServer == ServiceModel.Enums.Side.One;
-                        Table2.ServiceLight = response.CurrentServer == ServiceModel.Enums.Side.Two;
+                        Table1.ServiceLight = response.CurrentServer == Side.One;
+                        Table2.ServiceLight = response.CurrentServer == Side.Two;
                     }
                     catch (Exception ex)
                     {
-                        Board.ShowWarning("Failed to remove last point. " + ex.Message);
+                        Board.LogError("Failed to remove last point. " + ex.Message);
                     }
 
                     UpdateTables();
@@ -184,11 +179,11 @@ namespace AlertSense.PingPong.Raspberry
                     SendBounce(conn.Table);
                     sent = true;
                 }
-                Board.Log(String.Format("[{0}] Bounce [{1}] {2} {3}", conn.Table.Name, e.Count, e.Elapsed, sent ? "SENT" : "IGNORED"));
+                Board.LogDebug(String.Format("[{0}] Bounce [{1}] {2} {3}", conn.Table.Name, e.Count, e.Elapsed, sent ? "SENT" : "IGNORED"));
             }
             else
             {
-                Board.Log(String.Format("{0}_Timeout", conn.Table.Name));
+               // Board.LogDebug(String.Format("{0}_Timeout", conn.Table.Name));
                 //SendMissingBounce(table.Table);
             }
         }
@@ -212,7 +207,7 @@ namespace AlertSense.PingPong.Raspberry
             }
             catch (Exception ex)
             {
-                Board.ShowWarning("Failed to add a point. " + ex.Message);
+                Board.LogError("Failed to add a point. " + ex.Message);
             }
         }
 
@@ -220,7 +215,7 @@ namespace AlertSense.PingPong.Raspberry
         {
             if (!IsBounceQueueOpen())
             {
-                Board.ShowWarning("Failed to send BounceMessage.  Queue is not open.");
+                Board.LogError("Failed to send BounceMessage.  Queue is not open.");
                 return;
             }
                 
@@ -244,7 +239,7 @@ namespace AlertSense.PingPong.Raspberry
             }
             catch (Exception)
             {
-                Board.ShowWarning("Failed to send the bounce message to the server.");
+                Board.LogError("Failed to send the bounce message to the server.");
             }            
         }
 
@@ -256,7 +251,7 @@ namespace AlertSense.PingPong.Raspberry
         {
             if (IsBounceQueueOpen())
                 return;
-            //var mqFactory = new ConnectionFactory { HostName = Settings.RabbitMqHostName, UserName = Settings.RabbitMqUsername, Password= Settings.RabbitMqPassword };
+
             var mqFactory = new ConnectionFactory { HostName = Settings.RabbitMqHostName };
             _mqConnection = mqFactory.CreateConnection();
             _mqChannel = _mqConnection.CreateModel();   

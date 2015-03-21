@@ -2,21 +2,18 @@
 using AlertSense.PingPong.Raspberry.Models.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AlertSense.PingPong.Raspberry
 {
     public class GameBoard : IGameBoard
     {
-        private IDictionary<string, Coordinates> _coordinates;
-        private Coordinates _outputCoords;
+        private readonly IDictionary<string, Coordinates> _coordinates;
+        private readonly Coordinates _topLogCoordinates;
 
         public GameBoard()
         {
             _coordinates = new Dictionary<string, Coordinates>();
-            _outputCoords = new Coordinates {Left = 0, Top = 23};
+            _topLogCoordinates = new Coordinates {Left = 0, Top = 18};
         }
         
         public void DrawInititalScreen(Table table1, Table table2)
@@ -35,11 +32,13 @@ namespace AlertSense.PingPong.Raspberry
             DrawTable(table2);
             UpdateTable(table2);
 
-            ResetCursor();
+            Console.ResetColor();
+            Console.SetCursorPosition(_topLogCoordinates.Left, _topLogCoordinates.Top);
         }
 
         public void DrawTable(Table table)
         {
+            SaveCursor();
             var coords = _coordinates[table.Name];
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.SetCursorPosition(coords.Left, coords.Top);
@@ -53,16 +52,17 @@ namespace AlertSense.PingPong.Raspberry
             }
             Console.SetCursorPosition(coords.Left, coords.Top + coords.Height);
             Console.Write("╘" + new String('─', coords.Width - 2) + "╝");
-            ResetCursor();
+            RestoreCursor();
         }
 
         public void UpdateTable(Table table)
         {
+            SaveCursor();
             Coordinates coords;
 
             if (!_coordinates.TryGetValue(table.Name, out coords))
             {
-                ShowWarning("Failed to find coordinates for " + table.Name);
+                LogError("Failed to find coordinates for " + table.Name);
                 return;
             }
 
@@ -78,14 +78,26 @@ namespace AlertSense.PingPong.Raspberry
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("[BNC-" + table.Settings.BouncePin + "]");
 
-            ResetCursor();
+            RestoreCursor();
+        }
+
+        private int _cursorTop;
+        private int _cursorLeft;
+
+        private void SaveCursor()
+        {
+            _cursorTop = Console.CursorTop;
+            _cursorLeft = Console.CursorLeft;
+        }
+
+        private void RestoreCursor()
+        {
+            Console.SetCursorPosition(_cursorLeft, _cursorTop);
         }
 
         public void UpdateGame(Game game)
         {
-            Console.SetCursorPosition(0, 20);
-            Console.Write("Game Id: {0}", game.Id.ToString("D"));
-            ResetCursor();
+            LogInfo(String.Format("Game Id: {0}", game.Id.ToString("D")));
         }
 
         private class Coordinates
@@ -96,32 +108,22 @@ namespace AlertSense.PingPong.Raspberry
             public int Width { get; set; }
         }
 
-        public void ShowWarning(string message)
+        public void LogError(string message)
         {
-            Console.SetCursorPosition(0, 18);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message.PadRight(80, ' '));
-            ResetCursor();
-        }
-
-        public void ShowMessage(string message)
-        {
-            Console.SetCursorPosition(0, 18);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(message.PadRight(80, ' '));
-            ResetCursor();
-        }
-
-        public void Log(String message)
-        {
-            ResetCursor();
             Console.WriteLine(message);
         }
 
-        public void ResetCursor()
+        public void LogInfo(string message)
         {
-            Console.ResetColor();
-            Console.SetCursorPosition(_outputCoords.Left, _outputCoords.Top);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(message);
+        }
+
+        public void LogDebug(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(message);
         }
     }
 }

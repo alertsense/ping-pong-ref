@@ -180,7 +180,7 @@ namespace AlertSense.PingPong.Raspberry.IO
 
         private void Log(string message)
         {
-            //Console.WriteLine("{0}: {1}", Table.Name, message);
+            Console.WriteLine("{0}: {1}", Table.Name, message);
         }
     }
 }
